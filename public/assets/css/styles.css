@@ -1,0 +1,46 @@
+/* Base Reset & Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import 'variables.css';
+@import 'components/button.css';
+@import 'components/input.css';
+@import 'components/menu-item.css';
+@import 'components/menu.css';
+@import 'components/mobile-menu.css';
+@import 'components/store-card.css';
+@import 'components/scroll-icon.css';
+@import 'components/video-control.css';
+@import 'components/sound-control.css';
+@import 'components/music-service-button.css';
+@import 'components/tab.css';
+@import 'components/dropdown.css';
+@import 'components/card-date.css';
+@import 'components/card-youtube.css';
+@import 'components/modal-youtube.css';
+@import 'components/hero.css';
+@import 'components/dates-section.css';
+@import 'components/videos-section.css';
+@import 'components/boutique-section.css';
+@import 'layout.css';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--color-neutral-900);
+    background-color: var(--color-neutral-100);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-20);
+    width: 100%;
+}

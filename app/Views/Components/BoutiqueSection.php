@@ -1,0 +1,25 @@
+<?php
+use App\Helpers\Component;
+
+?>
+<section class="boutique-section" data-name="Boutique section" id="boutique">
+    <div class="boutique-container" data-name="container">
+        <div class="boutique-text" data-name="text">
+            <h2 class="boutique-heading" data-name="Paragraph container">
+                <span class="boutique-heading-pink">JE SUIS UN.E SALE GOSSE</span>
+                <span class="boutique-heading-black">TOUJOURS DISPONIBLE</span>
+            </h2>
+            <div class="boutique-action">
+                <?= Component::render('Button', [
+    'label' => 'DÉCOUVRIR',
+    'variant' => 'primary',
+    'style' => 'solid',
+    'size' => 'extra-large'
+])?>
+            </div>
+        </div>
+        <div class="boutique-image-wrapper" data-name="Image">
+            <img src="assets/img/boutique collage.png" alt="Boutique collage" class="boutique-image">
+        </div>
+    </div>
+</section>
