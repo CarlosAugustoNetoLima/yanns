@@ -19,12 +19,15 @@ $classes = [
 $isDisabled = ($state === 'disabled' || (isset($disabled) && $disabled));
 ?>
 
-<button class="<?= implode(' ', array_filter($classes))?>" <?= $isDisabled ? 'disabled' : ''?>>
+<button <?=isset($id) ? 'id="' . htmlspecialchars($id) . '"' : ''?>
+    <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : ''?> class="
+    <?= implode(' ', array_filter($classes))?>"
+    <?= $isDisabled ? 'disabled' : ''?>>
     <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
-        <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
+    <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
     <?php
 else: ?>
-        <?= $label ?? 'Button'?>
+    <?= $label ?? 'Button'?>
     <?php
 endif; ?>
 </button>

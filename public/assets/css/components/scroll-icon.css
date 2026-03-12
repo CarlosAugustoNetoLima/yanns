@@ -6,7 +6,7 @@
     /* Mobile Defaults (Figma 280:762) */
     width: 16px;
     height: 30px;
-    border: 2px solid var(--color-neutral-0, #ffffff);
+    border: 2px solid var(--color-neutral-0);
     border-radius: 8px;
     display: flex;
     justify-content: center;
@@ -14,7 +14,7 @@
 
 .scroll-icon-wheel {
     position: absolute;
-    background-color: var(--color-neutral-0, #ffffff);
+    background-color: var(--color-neutral-0);
     border-radius: 1px;
     /* Mobile Wheel */
     width: 2px;
@@ -53,7 +53,7 @@
     .scroll-icon {
         width: 22px;
         height: 40px;
-        border: 2px solid var(--color-neutral-0, #ffffff);
+        border: 2px solid var(--color-neutral-0);
         border-radius: 11px;
     }
 

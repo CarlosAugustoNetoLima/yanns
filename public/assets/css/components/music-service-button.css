@@ -69,7 +69,7 @@
 .music-service-label {
     font-family: 'Inter', sans-serif;
     font-size: calc(var(--msb-h) * 0.166);
-    color: var(--color-neutral-100, #ffffff);
+    color: var(--color-neutral-100);
     margin: 0;
     line-height: 1;
 }
@@ -78,7 +78,7 @@
     font-family: 'Inter', sans-serif;
     font-size: calc(var(--msb-h) * 0.3);
     font-weight: 500;
-    color: var(--color-neutral-100, #ffffff);
+    color: var(--color-neutral-100);
     margin: 0;
     line-height: 1.2;
 }

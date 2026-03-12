@@ -14,13 +14,26 @@
 @import 'components/tab.css';
 @import 'components/dropdown.css';
 @import 'components/card-date.css';
+@import 'components/card-calendar.css';
 @import 'components/card-youtube.css';
 @import 'components/modal-youtube.css';
 @import 'components/hero.css';
 @import 'components/dates-section.css';
+@import 'components/dates-page.css';
 @import 'components/videos-section.css';
 @import 'components/boutique-section.css';
+@import 'components/collections.css';
+@import 'components/product-details.css';
 @import 'layout.css';
+
+/* Global Components */
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-neutral-300);
+    border: none;
+    margin: 0;
+}
 
 * {
     box-sizing: border-box;

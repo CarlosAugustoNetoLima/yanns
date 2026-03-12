@@ -34,7 +34,8 @@ $routes = [
     '/musique' => 'musique',
     '/dates' => 'dates',
     '/collections' => 'collections',
-    '/biographie' => 'biographie'
+    '/biographie' => 'biographie',
+    '/produto' => 'product_details'
 ];
 
 if (array_key_exists($path, $routes)) {
@@ -45,8 +46,9 @@ if (array_key_exists($path, $routes)) {
         'home' => 'Home',
         'musique' => 'Musique & Vidéo',
         'dates' => 'Dates',
-        'collections' => 'Collections',
-        'biographie' => 'Biographie'
+        'collections' => 'COLLECTIONS',
+        'biographie' => 'Biographie',
+        'product_details' => 'Détails du Produit'
     ];
     $pageTitle = $pageTitles[$activePage] ?? 'YANNS';
 ?>
@@ -60,10 +62,16 @@ if (array_key_exists($path, $routes)) {
         <?= htmlspecialchars($pageTitle)?>
     </title>
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/components/cart-modal.css">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body>
-    <?= Component::render('Header', ['activePage' => $activePage])?>
+    <?php
+    $headerActivePage = ($activePage === 'product_details') ? 'collections' : $activePage;
+?>
+    <?= Component::render('Header', ['activePage' => $headerActivePage])?>
 
     <main class="main-content">
         <?php if ($activePage === 'home'): ?>
@@ -71,6 +79,15 @@ if (array_key_exists($path, $routes)) {
         <?= Component::render('DatesSection')?>
         <?= Component::render('VideosSection')?>
         <?= Component::render('BoutiqueSection')?>
+        <?php
+    elseif ($activePage === 'collections'): ?>
+        <?= Component::render('Collections')?>
+        <?php
+    elseif ($activePage === 'product_details'): ?>
+        <?= Component::render('ProductDetails')?>
+        <?php
+    elseif ($activePage === 'dates'): ?>
+        <?= Component::render('DatesPage')?>
         <?php
     else: ?>
         <section class="generic-page">
@@ -85,9 +102,21 @@ if (array_key_exists($path, $routes)) {
     </main>
 
     <?= Component::render('Footer')?>
+    <?= Component::render('CartModal')?>
+
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script src="/assets/js/youtube-modal.js"></script>
+    <script src="/assets/js/cart-modal.js"></script>
     <script src="/assets/js/hero.js"></script>
+    <?php if ($activePage === 'collections'): ?>
+    <script src="/assets/js/collections.js"></script>
+    <?php
+    elseif ($activePage === 'product_details'): ?>
+    <script src="/assets/js/product-details.js"></script>
+    <?php
+    endif; ?>
 </body>
 
 </html>

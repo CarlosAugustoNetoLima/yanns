@@ -13,6 +13,7 @@ use App\Helpers\IconHelper;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YANNS Styleguide</title>
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/components/cart-modal.css">
     <style>
         .styleguide-section {
             margin-bottom: var(--spacing-64);
@@ -661,6 +662,35 @@ use App\Helpers\IconHelper;
         </section>
 
         <section class="styleguide-section">
+            <h2>Card Calendar (Tour Dates)</h2>
+            <p style="margin-bottom: var(--spacing-24); color: var(--color-neutral-600);">High-fidelity tour date card
+                based on Figma Calendars component.</p>
+            <div class="styleguide-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                <div>
+                    <p style="font-size: 12px; margin-bottom: 8px; color: var(--color-neutral-500);">1. Default State
+                        (Gray & Pink variants)</p>
+                    <div style="display: flex; gap: 24px;">
+                        <?= Component::render('CardCalendar', ['date' => '14 MARS', 'city' => 'ISTRES', 'variant' => 'gray'])?>
+                        <?= Component::render('CardCalendar', ['date' => '28 MARS', 'city' => 'BREST', 'variant' => 'pink'])?>
+                    </div>
+                </div>
+                <div>
+                    <p style="font-size: 12px; margin-bottom: 8px; color: var(--color-neutral-500);">2. Hover State
+                        (Hover over to see details)</p>
+                    <?= Component::render('CardCalendar', [
+    'date' => '14 MARS',
+    'city' => 'ISTRES',
+    'variant' => 'gray',
+    'fullTime' => '14 Mars - Samedi 21h00',
+    'locationDetails' => "L'Usine, Istres, FRA",
+    'doorsOpen' => 'Ouverture des portes: 19h',
+    'statusText' => 'Dernières places'
+])?>
+                </div>
+            </div>
+        </section>
+
+        <section class="styleguide-section">
             <h2>Youtube Cards</h2>
             <p style="margin-bottom: var(--spacing-24); color: var(--color-neutral-600);">Component for displaying
                 YouTube videos.</p>
@@ -770,7 +800,10 @@ use App\Helpers\IconHelper;
 
     <?= Component::render('Footer')?>
 
+    <?= Component::render('CartModal')?>
+
     <script src="assets/js/youtube-modal.js"></script>
+    <script src="assets/js/cart-modal.js"></script>
 </body>
 
 </html>

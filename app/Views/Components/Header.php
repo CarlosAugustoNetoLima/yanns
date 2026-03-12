@@ -26,8 +26,9 @@ $activePage = $activePage ?? 'home';
                 </div>
 
                 <div class="header-actions">
-                        <a href="#" class="icon-link">
+                        <a href="#" class="icon-link cart-icon-wrapper" data-cart-open>
                                 <?=\App\Helpers\IconHelper::cartOutline(24, 'var(--color-neutral-600)')?>
+                                <span class="cart-badge hidden">0</span>
                         </a>
                         <a href="#" class="icon-link">
                                 <?=\App\Helpers\IconHelper::web(24, 'var(--color-neutral-600)')?>

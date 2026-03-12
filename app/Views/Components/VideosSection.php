@@ -34,13 +34,13 @@ $videosRecents = $videosVus; // For now, use the same videos or adjust as needed
     <div class="videos-row videos-vus-row">
         <div class="videos-title videos-title-left" data-name="Title">
             <div class="videos-title-image img-les" data-name="les">
-                <img alt="LES" src="/assets/icons/les.svg" />
+                <img alt="LES" src="/assets/img/les.svg" />
             </div>
             <div class="videos-title-image img-plus" data-name="plus">
-                <img alt="PLUS" src="/assets/icons/plus.svg" />
+                <img alt="PLUS" src="/assets/img/plus.svg" />
             </div>
             <div class="videos-title-image img-vus" data-name="vus">
-                <img alt="VUS" src="/assets/icons/vus.svg" />
+                <img alt="VUS" src="/assets/img/vus.svg" />
             </div>
         </div>
         <div class="videos-cards">
@@ -60,13 +60,13 @@ endforeach; ?>
         </div>
         <div class="videos-title videos-title-right" data-name="Title">
             <div class="videos-title-image img-les" data-name="les">
-                <img alt="LES" src="/assets/icons/les.svg" />
+                <img alt="LES" src="/assets/img/les.svg" />
             </div>
             <div class="videos-title-image img-plus" data-name="plus">
-                <img alt="PLUS" src="/assets/icons/plus.svg" />
+                <img alt="PLUS" src="/assets/img/plus.svg" />
             </div>
             <div class="videos-title-image img-recents" data-name="recents">
-                <img alt="RÉCENTS" src="/assets/icons/recents.svg" />
+                <img alt="RÉCENTS" src="/assets/img/recents.svg" />
             </div>
         </div>
     </div>

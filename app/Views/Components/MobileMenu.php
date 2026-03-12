@@ -12,8 +12,9 @@ $activePage = $activePage ?? 'home';
 
     <!-- Action Icons Row -->
     <div class="mobile-menu-actions">
-        <a href="https://www.instagram.com/yannsofficiel/" target="_blank">
+        <a href="#" class="cart-icon-wrapper" data-cart-open target="_self">
             <?= IconHelper::cartOutline(24, 'var(--color-neutral-600)')?>
+            <span class="cart-badge hidden">0</span>
         </a>
         <a href="#" target="_blank">
             <?= IconHelper::web(24, 'var(--color-neutral-600)')?>

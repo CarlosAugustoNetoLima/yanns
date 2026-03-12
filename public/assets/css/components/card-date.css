@@ -2,7 +2,7 @@
 .card-date {
     display: flex;
     align-items: center;
-    border: 2px solid var(--color-neutral-300, #dbe2ec);
+    border: 2px solid var(--color-neutral-300);
     box-sizing: border-box;
     width: 328px;
     height: 95px;
@@ -19,8 +19,8 @@
 /* Hover Background / Border */
 .card-date.hover,
 .card-date:hover {
-    background-color: var(--color-neutral-1100, #020612);
-    border-color: var(--color-neutral-1100, #020612);
+    background-color: var(--color-neutral-1100);
+    border-color: var(--color-neutral-1100);
 }
 
 /* BILLETTERIE Hover Text Overlay */
@@ -83,7 +83,7 @@
     font-size: 12px;
     font-weight: 400;
     /* Regular */
-    color: var(--color-neutral-600, #526078);
+    color: var(--color-neutral-600);
     margin: 0;
     line-height: normal;
     flex-shrink: 0;
@@ -95,7 +95,7 @@
     font-size: 40px;
     font-weight: 700;
     /* Bold */
-    color: var(--color-neutral-1100, #020612);
+    color: var(--color-neutral-1100);
     margin: 0;
     line-height: 1;
     /* Match design sizing better */
@@ -127,7 +127,7 @@
 
 .card-date-location {
     font-size: 16px;
-    color: var(--color-neutral-1100, #020612);
+    color: var(--color-neutral-1100);
     margin: 0;
     line-height: normal;
     width: 100%;
@@ -136,7 +136,7 @@
 
 .card-date-time-venue {
     font-size: 12px;
-    color: var(--color-neutral-600, #526078);
+    color: var(--color-neutral-600);
     margin: 0;
     line-height: normal;
     width: 100%;

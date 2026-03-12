@@ -18,7 +18,7 @@ if ($class) {
             </div>
             <div class="card-youtube-overlay"></div>
             <div class="card-youtube-play">
-                <img src="/assets/icons/icon-play.svg" alt="Play" />
+                <img src="/assets/img/icons/icon-play.svg" alt="Play" />
             </div>
         </div>
         <div class="card-youtube-info">
