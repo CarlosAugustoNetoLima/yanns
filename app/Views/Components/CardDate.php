@@ -6,6 +6,9 @@ $dayName = $dayName ?? 'mar.';
 $dayNumber = $dayNumber ?? '14';
 $locationText = $locationText ?? 'Istres, France';
 $timeAndVenue = $timeAndVenue ?? "sam., 19:00 · L'Usine";
+$idEvent = $idEvent ?? '1';
+$event = $event ?? 'Demonstração';
+$checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
 
 $isDefault = $state === 'Default';
 $isHover = $state === 'Hover';
@@ -16,7 +19,7 @@ if (isset($class)) {
     $cardClass .= ' ' . $class;
 }
 ?>
-<div class="<?= htmlspecialchars($cardClass)?>">
+<div class="<?= htmlspecialchars($cardClass)?>" onclick="openCustomModal('<?php echo $event; ?>', '<?php echo $checkoutUrl . $idEvent; ?>')">
     <!-- Hover Text Overlay -->
     <div class="card-date-hover-text">BILLETTERIE</div>
 

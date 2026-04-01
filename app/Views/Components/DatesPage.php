@@ -44,6 +44,32 @@ $dates = [
         'variant' => 'pink'
     ]
 ];
+
+$dates = [];
+$vari = false;
+foreach ($events as $ev) {
+    $vari = !$vari;
+    $dateStart = new DateTime($ev->date_start);
+    $mes  = $dateStart->format('M'); // mês abreviado
+    $dia  = $dateStart->format('d'); // dia
+
+    $dateOpen = new DateTime($ev->date_opening);
+
+    array_push($dates, [
+        'date' => $dia . ' ' . $mes,
+        'idEvent' => $ev->id,
+        'event' => $ev->name,
+        'checkoutUrl' => $checkoutUrl,
+        'date' => $dia . ' ' . $mes,
+        'city' => $ev->city->name,
+        'variant' => !$vari ? 'pink' : 'gray',
+        'fullTime' => $dateStart->format('d M - D H:m'),
+        'locationDetails' => $ev->place->name,
+        'doorsOpen' =>  'Ouverture des portes: ' . $dateOpen->format('H') . 'h'
+    ]);
+}
+
+$dateNow = new DateTime();
 ?>
 
 <section class="dates-page-light" data-name="Dates page">
@@ -52,7 +78,7 @@ $dates = [
         <header class="dates-page-header">
             <h2 class="dates-page-title">
                 <span class="dates-page-title-text">DATES DE TOURNÉE</span>
-                <span class="dates-page-title-year">2026</span>
+                <span class="dates-page-title-year"><?=  $dateNow->format('Y'); ?></span>
             </h2>
         </header>
 

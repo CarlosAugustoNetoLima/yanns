@@ -5,6 +5,10 @@ $variant = strtolower($variant ?? 'primary');
 $size = str_replace(' ', '-', strtolower($size ?? 'medium'));
 $state = strtolower($state ?? 'default');
 $icon = $icon ?? null;
+$idEvent = $idEvent ?? null;
+$event = $event ?? 'Demonstração';
+$checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
+$url = $url ?? '/';
 
 $classes = [
     'btn',
@@ -18,8 +22,8 @@ $classes = [
 
 $isDisabled = ($state === 'disabled' || (isset($disabled) && $disabled));
 ?>
-
-<button <?=isset($id) ? 'id="' . htmlspecialchars($id) . '"' : ''?>
+<?php if(isset($idEvent)) { ?>
+<button onclick="openCustomModal('<?php echo $event; ?>', '<?php echo $checkoutUrl . $idEvent; ?>')" <?=isset($id) ? 'id="' . htmlspecialchars($id) . '"' : ''?>
     <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : ''?> class="
     <?= implode(' ', array_filter($classes))?>"
     <?= $isDisabled ? 'disabled' : ''?>>
@@ -31,3 +35,17 @@ else: ?>
     <?php
 endif; ?>
 </button>
+<?php } else { ?>
+<a href="<?= $url; ?>" <?=isset($id) ? 'id="' . htmlspecialchars($id) . '"' : ''?>
+    <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : ''?> class="
+    <?= implode(' ', array_filter($classes))?>"
+    <?= $isDisabled ? 'disabled' : ''?>>
+    <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
+    <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
+    <?php
+else: ?>
+    <?= $label ?? 'Button'?>
+    <?php
+endif; ?>
+</a>
+<?php } ?>

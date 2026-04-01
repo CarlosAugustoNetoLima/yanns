@@ -7,6 +7,9 @@ $city = $city ?? 'ISTRES';
 $variant = $variant ?? 'gray';
 
 // --- Hover Props ---
+$idEvent = $idEvent ?? '1';
+$event = $event ?? 'Demonstração';
+$checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
 $fullTime = $fullTime ?? '14 Mars - Samedi 21h00';
 $locationDetails = $locationDetails ?? "L'Usine, Istres, FRA";
 $doorsOpen = $doorsOpen ?? 'Ouverture des portes: 19h';
@@ -15,11 +18,14 @@ $statusText = $statusText ?? 'Dernières places';
 $fillColor = ($variant === 'gray') ? 'var(--color-neutral-500)' : 'var(--color-primary-300)';
 
 $buttonComponent = Component::render('Button', [
+    'idEvent' => $idEvent,
+    'event' => $event,
     'variant' => 'Primary', // Or any custom variant that uses Neutral-1100 bg
     'style' => 'Solid',
     'size' => 'Small',
     'label' => 'RÉSERVER MON BILLET',
-    'class' => 'card-calendar-btn' // In case it needs strict overrides
+    'class' => 'card-calendar-btn', // In case it needs strict overrides
+    'checkoutUrl' => $checkoutUrl
 ]);
 ?>
 
