@@ -80,3 +80,51 @@
     z-index: 10;
     opacity: 0.7;
 }
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+    .hero {
+        height: calc(100vh - 80px); /* Account for 80px mobile header */
+        min-height: 500px;
+    }
+
+    .hero-video-container {
+        height: 100%;
+    }
+
+    /* Top Row: Play/Pause and Mute/Unmute */
+    .hero-control-players {
+        position: absolute;
+        left: 50%;
+        bottom: 160px;
+        transform: translateX(-50%);
+        right: auto;
+        width: 100%;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    /* Bottom Row: Music Service Buttons */
+    .hero-apps-sound {
+        position: absolute;
+        left: 50%;
+        bottom: 80px;
+        transform: translateX(-50%);
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .hero-scroll {
+        bottom: 24px;
+    }
+
+    .hero-apps-sound .music-service-button {
+        transform: scale(0.85);
+    }
+
+    .hero-control-players .video-control, 
+    .hero-control-players .sound-control {
+        transform: scale(0.9);
+    }
+}

@@ -2,13 +2,7 @@
 use App\Helpers\Component;
 
 $tabs = [
-    'CELUI/CELLE',
-    'MON HISTOIRE',
-    'SALE GOSSE',
-    '1998',
-    'MAINS EN L\'AIR',
-    'PARTIR LOIN',
-    'PAYS DES MERVEILLES'
+    'ALL',
 ];
 
 ?>

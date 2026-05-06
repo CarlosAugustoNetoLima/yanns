@@ -39,49 +39,81 @@ $routes = [
 ];
 
 // get events
-$curl = curl_init();
+$eventsArray = [
+    (object) [
+        'id' => 1,
+        // 'name' => 'YANNS "Phénoménal RE/TOUR"',
+        'date_start' => '2026-07-20 21:00:00',
+        'date_opening' => '2026-07-20 20:00:00',
+        'city' => (object) ['name' => 'CAP D\'AGDE'],
+        'country' => (object) ['name' => 'France'],
+        'place' => (object) ['name' => 'Les Arènes du Cap d\'Agde'],
+        'ticketUrl' => 'https://my.weezevent.com/yanns-phenomenal-retour-1'
+    ],
+    (object) [
+        'id' => 2,
+        // 'name' => 'YANNS',
+        'date_start' => '2026-08-09 21:30:00',
+        'date_opening' => '2026-08-09 20:30:00',
+        'city' => (object) ['name' => 'PALAVAS-LES-FLOTS'],
+        'country' => (object) ['name' => 'France'],
+        'place' => (object) ['name' => 'Festival Côté Mer'],
+        'ticketUrl' => 'https://shotgun.live/events/festival-cote-mer-yanns'
+    ],
+    (object) [
+        'id' => 3,
+        // 'name' => 'YANNS',
+        'date_start' => '2026-09-11 20:30:00',
+        'date_opening' => '2026-09-11 19:30:00',
+        'city' => (object) ['name' => 'BOURGES'],
+        'country' => (object) ['name' => 'France'],
+        'place' => (object) ['name' => 'Palais d\'Auron'],
+        'ticketUrl' => 'https://my.weezevent.com/yanns-phenomenal-retour'
+    ],
+    (object) [
+        'id' => 4,
+        // 'name' => 'YANNS',
+        'date_start' => '2026-09-12 20:00:00',
+        'date_opening' => '2026-09-12 19:00:00',
+        'city' => (object) ['name' => 'CALUIRE-ET-CUIRE'],
+        'country' => (object) ['name' => 'France'],
+        'place' => (object) ['name' => 'Radiant-Bellevue'],
+        'ticketUrl' => 'https://billetterie.radiant-bellevue.fr/fr/product/1205/radiant_bellevue/yanns'
+    ],
+    (object) [
+        'id' => 5,
+        // 'name' => 'YANNS',
+        'date_start' => '2026-09-13 17:00:00',
+        'date_opening' => '2026-09-13 16:00:00',
+        'city' => (object) ['name' => 'REIMS'],
+        'country' => (object) ['name' => 'France'],
+        'place' => (object) ['name' => 'LE K'],
+        'ticketUrl' => 'https://my.weezevent.com/yanns-phenomenal-retour-2'
+    ],
+    (object) [
+        'id' => 6,
+        // 'name' => 'YANNS',
+        'date_start' => '2026-10-03 20:30:00',
+        'date_opening' => '2026-10-03 19:30:00',
+        'city' => (object) ['name' => 'DISON'],
+        'country' => (object) ['name' => 'Belgique'],
+        'place' => (object) ['name' => 'Espace 58'],
+        'ticketUrl' => 'https://sales.resevents.be/event/2362/yanns'
+    ],
+    (object) [
+        'id' => 7,
+        // 'name' => 'YANNS',
+        'date_start' => '2026-12-06 17:00:00',
+        'date_opening' => '2026-12-06 16:00:00',
+        'city' => (object) ['name' => 'CLERMONT-FERRAND'],
+        'country' => (object) ['name' => 'France'],
+        'place' => (object) ['name' => 'La Coopérative de Mai'],
+        'ticketUrl' => 'https://billetterie-lesdernierscouches.tickandlive.com/reserver/yanns/158022'
+    ]
+];
 
-curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://lebillet.eu/api_events/events?limit=6',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: Basic 9f4c2a1b7e3d6a8cpewe8992801',
-        'API: application/json',
-        'Content-Type: application/json',
-        'Cookie: PHPSESSID=7sooqfe3a52859s597k89fb9m5'
-    ),
-));
-
-$response = json_decode(curl_exec($curl));
-$eventsLimit = $response->events;
-
-$curl = curl_init();
-
-curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://lebillet.eu/api_events/events',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: Basic 9f4c2a1b7e3d6a8cpewe8992801',
-        'API: application/json',
-        'Content-Type: application/json',
-        'Cookie: PHPSESSID=7sooqfe3a52859s597k89fb9m5'
-    ),
-));
-
-$response = json_decode(curl_exec($curl));
-$eventsAll = $response->events;
+$eventsAll = $eventsArray;
+$eventsLimit = array_slice($eventsArray, 0, 6);
 
 $checkoutUrl = 'https://checkout.lebillet.eu/';
 
@@ -98,7 +130,7 @@ if (array_key_exists($path, $routes)) {
         'product_details' => 'Détails du Produit'
     ];
     $pageTitle = $pageTitles[$activePage] ?? 'YANNS';
-?>
+    ?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -126,16 +158,16 @@ if (array_key_exists($path, $routes)) {
                 <?= Component::render('DatesSection', ['events' => $eventsLimit, 'checkoutUrl' => $checkoutUrl]) ?>
                 <?= Component::render('VideosSection') ?>
                 <?= Component::render('BoutiqueSection') ?>
-            <?php
+                <?php
             elseif ($activePage === 'collections'): ?>
                 <?= Component::render('Collections') ?>
-            <?php
+                <?php
             elseif ($activePage === 'product_details'): ?>
                 <?= Component::render('ProductDetails') ?>
-            <?php
+                <?php
             elseif ($activePage === 'dates'): ?>
                 <?= Component::render('DatesPage', ['events' => $eventsAll, 'checkoutUrl' => $checkoutUrl]) ?>
-            <?php
+                <?php
             else: ?>
                 <section class="generic-page">
                     <div class="container">
@@ -144,7 +176,7 @@ if (array_key_exists($path, $routes)) {
                         </h1>
                     </div>
                 </section>
-            <?php
+                <?php
             endif; ?>
             <?= Component::render('checkoutModal', ['checkoutUrl' => $checkoutUrl]) ?>
         </main>
@@ -156,19 +188,19 @@ if (array_key_exists($path, $routes)) {
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
         <script src="/assets/js/youtube-modal.js"></script>
-        <script src="/assets/js/cart-modal.js"></script>
+        <!--<script src="/assets/js/cart-modal.js"></script>-->
         <script src="/assets/js/hero.js"></script>
         <?php if ($activePage === 'collections'): ?>
             <script src="/assets/js/collections.js"></script>
-        <?php
+            <?php
         elseif ($activePage === 'product_details'): ?>
-            <script src="/assets/js/product-details.js"></script>
-        <?php
+            <!--<script src="/assets/js/product-details.js"></script> -->
+            <?php
         endif; ?>
     </body>
 
     </html>
-<?php
+    <?php
 } else {
     http_response_code(404);
     echo "404 Not Found";

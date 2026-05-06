@@ -15,8 +15,7 @@
     justify-content: center;
     height: 60px;
     width: 100%;
-    background-color: var(--color-neutral-100);
-    border-bottom: 1px solid var(--color-neutral-1100);
+    background-color: transparent;
     color: var(--color-neutral-1100);
     text-decoration: none;
     font-family: 'Inter', sans-serif;
@@ -27,27 +26,14 @@
     flex-shrink: 0;
     white-space: nowrap;
     overflow: hidden;
-    margin-bottom: -1px;
-    /* Collapse borders */
     z-index: 1;
-    border: 1px solid var(--color-neutral-1100);
-}
-
-.mobile-menu-item:first-child {
-    border-top: 1px solid var(--color-neutral-1100);
-    /* Ensure top border exists */
-    margin-top: 0;
 }
 
 .mobile-menu-item.active {
-    background-color: var(--color-neutral-1100);
-    /* #020612 */
-    color: var(--color-neutral-100);
-    /* #fcfcfc */
+    background-color: transparent;
+    color: var(--color-primary-400-main);
     font-size: 32px;
     z-index: 2;
-    /* Sit above others if borders overlap */
-    border-color: var(--color-neutral-1100);
 }
 
 .mobile-menu-actions,
@@ -58,9 +44,7 @@
     gap: 24px;
     height: 60px;
     width: 100%;
-    background-color: var(--color-neutral-100);
-    border: 1px solid var(--color-neutral-1100);
-    margin-bottom: -1px;
+    background-color: transparent;
     z-index: 1;
     box-sizing: border-box;
 }

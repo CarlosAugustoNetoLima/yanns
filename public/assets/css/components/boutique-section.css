@@ -70,17 +70,25 @@
     object-fit: cover;
 }
 
+.mobile-only {
+    display: none;
+}
+
 /* Responsive */
 @media (max-width: 991px) {
     .boutique-container {
-        flex-direction: column-reverse;
-        /* Image above text often looks better or stack as is */
+        flex-direction: column;
         gap: var(--spacing-40);
     }
 
     .boutique-text {
         align-items: center;
         text-align: center;
+        width: 100%;
+    }
+
+    .boutique-action {
+        width: 100%;
     }
 
     .boutique-heading {
@@ -96,6 +104,22 @@
     .boutique-image-wrapper {
         width: 100%;
         max-width: 800px;
+        aspect-ratio: auto;
+        flex: none;
+    }
+    
+    .boutique-picture, .boutique-image {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: block !important;
     }
 }
 

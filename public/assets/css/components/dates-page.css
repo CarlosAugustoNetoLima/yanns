@@ -41,7 +41,7 @@
 .dates-page-title-year {
     font-size: 64px;
     font-weight: 700;
-    color: #E83284;
+    color: var(--color-primary-400-main);
     line-height: 1.1;
 }
 
@@ -57,7 +57,7 @@
 .dates-page-sidebar {
     position: relative;
     flex-shrink: 0;
-    width: 50px;
+    width: 100px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -67,16 +67,15 @@
 .dates-sidebar-text {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-
     font-family: 'Inter', sans-serif;
     font-size: 32px;
     font-weight: 700;
     color: #020612;
     text-transform: uppercase;
     line-height: 1.1;
-    text-align: left;
-    /* Because it's rotated 180, this aligns it to the "top" visually */
+    display: block;
     white-space: pre-wrap;
+    text-align: center;
 }
 
 /* Grid System */

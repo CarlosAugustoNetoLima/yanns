@@ -14,12 +14,14 @@ use App\Helpers\Component;
     'label' => 'DÉCOUVRIR',
     'variant' => 'primary',
     'style' => 'solid',
-    'size' => 'extra-large'
+    'size' => 'extra-large',
+    'url' => '/collections'
 ])?>
             </div>
         </div>
         <div class="boutique-image-wrapper" data-name="Image">
-            <img src="assets/img/boutique collage.png" alt="Boutique collage" class="boutique-image">
+            <img src="/assets/img/boutique-collage-mobile.png" alt="Boutique collage" class="boutique-image mobile-only">
+            <img src="/assets/img/boutique-collage.png" alt="Boutique collage" class="boutique-image desktop-only">
         </div>
     </div>
 </section>

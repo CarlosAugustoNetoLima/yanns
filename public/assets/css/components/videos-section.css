@@ -97,7 +97,14 @@
     }
 
     .videos-cards {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         width: 100%;
+    }
+
+    .videos-cards .card-youtube {
+        flex: 0 1 calc(50% - var(--spacing-16));
+        min-width: 140px;
     }
 }

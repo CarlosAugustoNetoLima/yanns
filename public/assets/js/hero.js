@@ -72,59 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     heroVideo.addEventListener('pause', updatePlayState);
     heroVideo.addEventListener('volumechange', updateSoundState);
 
-    // Initial strict configuration requested by user
-    heroVideo.muted = false;
-    heroVideo.volume = 1;
-
-    // Forceful attempt to play using muted first so it strictly autoplays visually
-    heroVideo.muted = true;
-
-    const playPromise = heroVideo.play();
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            // It is playing (muted). Let's attempt to boldly unmute it now.
-            heroVideo.muted = false;
-
-            // If the browser blocks unmuting without interaction, it will forcefully PAUSE the video.
-            // We set up a quick trap to catch this auto-pause and fallback to playing muted visually.
-            const catchAutoPause = () => {
-                heroVideo.muted = true;
-                heroVideo.play().catch(() => { }); // Keep the video moving
-
-                // Wait for the actual first user interaction to release the sound
-                const unlockSound = (evt) => {
-                    if (evt && evt.target && evt.target.closest && evt.target.closest('.hero-control-players')) {
-                        // User clicked our controls, let them handle it. Remove these listeners.
-                        ['click', 'touchstart', 'scroll', 'keydown'].forEach(e => document.removeEventListener(e, unlockSound));
-                        return;
-                    }
-                    heroVideo.muted = false;
-                    ['click', 'touchstart', 'scroll', 'keydown'].forEach(e => document.removeEventListener(e, unlockSound));
-                    updateSoundState();
-                };
-
-                ['click', 'touchstart', 'scroll', 'keydown'].forEach(e => document.addEventListener(e, unlockSound));
-                heroVideo.removeEventListener('pause', catchAutoPause);
-            };
-
-            heroVideo.addEventListener('pause', catchAutoPause);
-
-            // If it survives 500ms without pausing, it means the browser allowed the audio!
-            setTimeout(() => {
-                heroVideo.removeEventListener('pause', catchAutoPause);
-                updateSoundState();
-            }, 500);
-
-            updatePlayState();
-            updateSoundState();
-
-        }).catch(error => {
-            console.warn("Autoplay was completely blocked:", error);
-        });
-    }
-
-    setTimeout(() => {
-        updatePlayState();
-        updateSoundState();
-    }, 150);
+    // Initial sync
+    updatePlayState();
+    updateSoundState();
 });

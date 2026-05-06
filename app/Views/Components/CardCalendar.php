@@ -8,8 +8,9 @@ $variant = $variant ?? 'gray';
 
 // --- Hover Props ---
 $idEvent = $idEvent ?? '1';
-$event = $event ?? 'Demonstração';
+$event = $event ?? '';
 $checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
+$ticketUrl = $ticketUrl ?? null;
 $fullTime = $fullTime ?? '14 Mars - Samedi 21h00';
 $locationDetails = $locationDetails ?? "L'Usine, Istres, FRA";
 $doorsOpen = $doorsOpen ?? 'Ouverture des portes: 19h';
@@ -22,10 +23,11 @@ $buttonComponent = Component::render('Button', [
     'event' => $event,
     'variant' => 'Primary', // Or any custom variant that uses Neutral-1100 bg
     'style' => 'Solid',
-    'size' => 'Small',
+    'size' => 'Large',
     'label' => 'RÉSERVER MON BILLET',
     'class' => 'card-calendar-btn', // In case it needs strict overrides
-    'checkoutUrl' => $checkoutUrl
+    'checkoutUrl' => $checkoutUrl,
+    'ticketUrl' => $ticketUrl
 ]);
 ?>
 
@@ -36,18 +38,18 @@ $buttonComponent = Component::render('Button', [
             <svg width="280" height="183" viewBox="0 0 280 183" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M280 0.126675V182.749L240.09 182.876L160.65 70.3044L159.892 84.9986L120.066 28.6285L119.982 0H160.439L239.88 112.403L240.09 0.126675H280Z"
-                    fill="<?= $fillColor?>" />
+                    fill="<?= $fillColor ?>" />
                 <path
                     d="M160.102 154.416L160.186 182.834H120.108L40.1624 69.6288L39.6572 181.778L0.0421316 95.0059L0 0.168899L40.5413 0.126675L119.519 111.98L120.361 95.7238L160.102 154.416Z"
-                    fill="<?= $fillColor?>" />
+                    fill="<?= $fillColor ?>" />
             </svg>
         </div>
         <div class="card-calendar-content-default">
             <p class="card-calendar-date-default">
-                <?= htmlspecialchars($date)?>
+                <?= htmlspecialchars($date) ?>
             </p>
             <p class="card-calendar-city-default">
-                <?= htmlspecialchars($city)?>
+                <?= htmlspecialchars($city) ?>
             </p>
         </div>
     </div>
@@ -56,22 +58,22 @@ $buttonComponent = Component::render('Button', [
     <div class="card-calendar-hover">
         <div class="card-calendar-details">
             <p>
-                <?= htmlspecialchars($fullTime)?>
+                <?= htmlspecialchars($fullTime) ?>
             </p>
             <p>
-                <?= htmlspecialchars($locationDetails)?>
+                <?= htmlspecialchars($locationDetails) ?>
             </p>
             <p>
-                <?= htmlspecialchars($doorsOpen)?>
+                <?= htmlspecialchars($doorsOpen) ?>
             </p>
         </div>
 
         <div class="card-calendar-button-wrap">
-            <?= $buttonComponent?>
+            <?= $buttonComponent ?>
         </div>
 
         <p class="card-calendar-status">
-            <?= htmlspecialchars($statusText)?>
+            <?= htmlspecialchars($statusText) ?>
         </p>
     </div>
 </div>

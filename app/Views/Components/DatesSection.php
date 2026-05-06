@@ -21,17 +21,19 @@ foreach ($events as $ev) {
     $mes  = $date->format('M'); // mês abreviado
     $dia  = $date->format('d'); // dia
     $ano  = $date->format('Y'); // ano
-    $hora = $date->format('H:m'); // hora
+    $hora = $date->format('H:i'); // hora
 
+    $placeInfo = $ev->place->name ? $ev->place->name . ', ' : '';
     array_push($dates, [
         'idEvent' => $ev->id,
-        'event' => $ev->name,
+        'event' => $ev->name ?? '',
         'checkoutUrl' => $checkoutUrl,
+        'ticketUrl' => $ev->ticketUrl ?? $checkoutUrl,
         'state' => 'Default',
         'dayName' => $mes . '.',
         'dayNumber' => $dia,
-        'locationText' => $ev->city->name . ', ' . $ev->country->name,
-        'timeAndVenue' => $diaSemana . ". " . $hora . " · " . $ev->place->name
+        'locationText' => $placeInfo . $ev->city->name . ', ' . $ev->country->name,
+        'timeAndVenue' => $diaSemana . ". " . $dia . " " . $mes . ". · " . $hora
     ]);
 }
 ?>

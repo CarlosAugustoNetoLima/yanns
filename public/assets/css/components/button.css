@@ -129,3 +129,10 @@
     width: 16px;
     height: 16px;
 }
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .btn:not(.btn-icon) {
+        width: 100%;
+    }
+}

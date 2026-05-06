@@ -19,8 +19,9 @@ $methodMap = [
     'amazon' => 'brandAmazon'
 ];
 $iconMethod = $methodMap[$service] ?? 'brandSpotify'; // Fallback
+$url = $url ?? '#';
 ?>
-<button class="music-service-button" data-service="<?= $service?>" aria-label="Listen on <?= $name?>">
+<a href="<?= $url?>" target="_blank" rel="noopener noreferrer" class="music-service-button" data-service="<?= $service?>" aria-label="Listen on <?= $name?>">
     <div class="music-service-icon">
         <?=\App\Helpers\IconHelper::$iconMethod(32, 'var(--color-neutral-0)')?>
     </div>
@@ -30,4 +31,4 @@ $iconMethod = $methodMap[$service] ?? 'brandSpotify'; // Fallback
             <?= $name?>
         </p>
     </div>
-</button>
+</a>

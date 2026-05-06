@@ -125,8 +125,19 @@
     display: none;
 }
 
-.card-date-location {
+.card-date-event {
     font-size: 16px;
+    font-weight: 700;
+    color: var(--color-primary-400-main);
+    margin: 0;
+    line-height: normal;
+    width: 100%;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.card-date-location {
+    font-size: 14px;
     color: var(--color-neutral-1100);
     margin: 0;
     line-height: normal;

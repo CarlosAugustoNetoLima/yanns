@@ -6,9 +6,10 @@ $size = str_replace(' ', '-', strtolower($size ?? 'medium'));
 $state = strtolower($state ?? 'default');
 $icon = $icon ?? null;
 $idEvent = $idEvent ?? null;
-$event = $event ?? 'Demonstração';
+$event = $event ?? '';
 $checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
 $url = $url ?? '/';
+$ticketUrl = $ticketUrl ?? 'https://www.ticketmaster.fr/fr/manifestation/yanns-billet/idmanif/652396';
 
 $classes = [
     'btn',
@@ -22,30 +23,35 @@ $classes = [
 
 $isDisabled = ($state === 'disabled' || (isset($disabled) && $disabled));
 ?>
-<?php if(isset($idEvent)) { ?>
-<button onclick="openCustomModal('<?php echo $event; ?>', '<?php echo $checkoutUrl . $idEvent; ?>')" <?=isset($id) ? 'id="' . htmlspecialchars($id) . '"' : ''?>
-    <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : ''?> class="
-    <?= implode(' ', array_filter($classes))?>"
-    <?= $isDisabled ? 'disabled' : ''?>>
-    <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
-    <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
-    <?php
-else: ?>
-    <?= $label ?? 'Button'?>
-    <?php
-endif; ?>
-</button>
+<?php if (isset($idEvent)) { ?>
+    <button onclick="openCustomModalNew('<?php echo htmlspecialchars($event); ?>', '<?php echo $ticketUrl; ?>')"
+        <?= isset($id) ? 'id="' . htmlspecialchars($id) . '"' : '' ?>     <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : '' ?> class="
+    <?= implode(' ', array_filter($classes)) ?>" <?= $isDisabled ? 'disabled' : '' ?>>
+        <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
+            <?= \App\Helpers\IconHelper::$icon(24, 'currentColor') ?>
+            <?php
+        else: ?>
+            <?= $label ?? 'Button' ?>
+            <?php
+        endif; ?>
+    </button>
 <?php } else { ?>
-<a href="<?= $url; ?>" <?=isset($id) ? 'id="' . htmlspecialchars($id) . '"' : ''?>
-    <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : ''?> class="
-    <?= implode(' ', array_filter($classes))?>"
-    <?= $isDisabled ? 'disabled' : ''?>>
-    <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
-    <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
-    <?php
-else: ?>
-    <?= $label ?? 'Button'?>
-    <?php
-endif; ?>
-</a>
+    <a href="<?= $url; ?>" <?= isset($id) ? 'id="' . htmlspecialchars($id) . '"' : '' ?>     <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : '' ?> class="
+    <?= implode(' ', array_filter($classes)) ?>" <?= $isDisabled ? 'disabled' : '' ?>>
+        <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
+            <?= \App\Helpers\IconHelper::$icon(24, 'currentColor') ?>
+            <?php
+        else: ?>
+            <?= $label ?? 'Button' ?>
+            <?php
+        endif; ?>
+    </a>
 <?php } ?>
+
+<script>
+    function openCustomModalNew(event, url) {
+        // You can customize this function to open your modal with the event name
+        // For now, it just redirects to the URL
+        window.open(url, '_blank');
+    }
+</script>

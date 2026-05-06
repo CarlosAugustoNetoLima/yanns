@@ -53,19 +53,23 @@ foreach ($events as $ev) {
     $mes  = $dateStart->format('M'); // mês abreviado
     $dia  = $dateStart->format('d'); // dia
 
-    $dateOpen = new DateTime($ev->date_opening);
+    $doorsOpenText = '';
+    if (!empty($ev->date_opening)) {
+        $dateOpen = new DateTime($ev->date_opening);
+        $doorsOpenText = 'Ouverture des portes: ' . $dateOpen->format('H') . 'h';
+    }
 
     array_push($dates, [
         'date' => $dia . ' ' . $mes,
         'idEvent' => $ev->id,
-        'event' => $ev->name,
+        'event' => $ev->name ?? '',
         'checkoutUrl' => $checkoutUrl,
-        'date' => $dia . ' ' . $mes,
+        'ticketUrl' => $ev->ticketUrl ?? $checkoutUrl,
         'city' => $ev->city->name,
         'variant' => !$vari ? 'pink' : 'gray',
-        'fullTime' => $dateStart->format('d M - D H:m'),
+        'fullTime' => $dateStart->format('d M - D H:i'),
         'locationDetails' => $ev->place->name,
-        'doorsOpen' =>  'Ouverture des portes: ' . $dateOpen->format('H') . 'h'
+        'doorsOpen' => $doorsOpenText
     ]);
 }
 
@@ -85,8 +89,7 @@ $dateNow = new DateTime();
         <div class="dates-page-content">
             <!-- Rotated Sidebar Text -->
             <div class="dates-page-sidebar">
-                <span class="dates-sidebar-text">BILLETTERIE
-                    OFFICIELLE</span>
+                <span class="dates-sidebar-text">BILLETTERIE<br>OFFICIELLE</span>
             </div>
 
             <!-- Grid using specifically tailored CardCalendars -->

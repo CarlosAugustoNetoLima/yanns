@@ -58,7 +58,7 @@
 }
 
 .dates-title-year {
-    color: #e83284;
+    color: var(--color-primary-400-main);
 }
 
 .dates-container {
@@ -102,5 +102,9 @@
 
     .dates-title {
         font-size: 40px;
+    }
+
+    .dates-action {
+        width: 100%;
     }
 }

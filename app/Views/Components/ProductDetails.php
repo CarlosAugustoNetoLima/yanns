@@ -4,22 +4,12 @@ use App\Helpers\Component;
 
 // Get the product ID from URL query params (simulating database fetch)
 $productId = $_GET['id'] ?? 'CELLE/CELUI - T-SHIRT';
+$id = $_GET['idP'] ?? '10944';
+$type = $_GET['type'] ?? 'all';
 
 // Map specific data if we recognize typical products, else fallbacks
-$image = '/assets/img/collections/casquette-black.png';
-$price = '24,90 €';
-
-if (strpos(strtoupper($productId), 'T-SHIRT') !== false) {
-    if (strpos(strtoupper($productId), 'WHITE') !== false) {
-        $image = '/assets/img/collections/tshirt-white.png';
-    }
-    else {
-        $image = '/assets/img/collections/tshirt-black.png';
-    }
-}
-elseif (strpos(strtoupper($productId), 'COQUE') !== false) {
-    $image = '/assets/img/collections/phone-case.png';
-}
+$image = $_GET['image'] ?? '/assets/img/collections/tshirt-black.png';
+$price = $_GET['price'] ?? '00,00 €';
 
 ?>
 
@@ -40,9 +30,9 @@ elseif (strpos(strtoupper($productId), 'COQUE') !== false) {
                     <div class="thumbnail active">
                         <img src="<?= htmlspecialchars($image)?>" alt="Thumbnail">
                     </div>
-                    <div class="thumbnail">
+                    <!-- <div class="thumbnail">
                         <img src="<?= htmlspecialchars($image)?>" alt="Thumbnail">
-                    </div>
+                    </div> -->
                 </div>
                 <div class="product-details-main-image">
                     <img src="<?= htmlspecialchars($image)?>" alt="<?= htmlspecialchars($productId)?>">
@@ -62,73 +52,93 @@ elseif (strpos(strtoupper($productId), 'COQUE') !== false) {
                 </div>
 
                 <!-- Sizes -->
-                <div class="product-details-sizes">
-                    <div class="size-button">XS</div>
-                    <div class="size-button">S</div>
-                    <div class="size-button">M</div>
-                    <div class="size-button">L</div>
-                    <div class="size-button">XL</div>
-                    <div class="size-button">XXL</div>
-                </div>
+                <?php if($type == 'shirt'){ ?>
+                    <div class="product-details-sizes">
+                        <div class="size-button" id="type_s" onclick="sizeSelect('type_s')">S</div>
+                        <div class="size-button" id="type_m" onclick="sizeSelect('type_m')">M</div>
+                        <div class="size-button" id="type_l" onclick="sizeSelect('type_l')">L</div>
+                        <div class="size-button" id="type_xl" onclick="sizeSelect('type_xl')">XL</div>
+                    </div>
+                <?php } ?>
+
+                <?php if($type == 'Casquette'){ ?>
+                    <div class="product-details-sizes">
+                        <div class="size-button" id="type_blanc" onclick="sizeSelect('type_blanc')">Blanc</div>
+                        <div class="size-button" id="type_noir" onclick="sizeSelect('type_noir')">Noir</div>
+                    </div>
+                <?php } ?>
+
+                <?php 
+                    $classes = [
+                        'btn',
+                        "btn-style-outline",
+                        "btn-variant-primary",
+                        "btn-size-medium",
+                        'default',
+                        'btn-icon',
+                        "qty-btn"
+                    ];
+
+                    $classes2 = [
+                        'btn',
+                        "btn-style-solid",
+                        "btn-variant-primary",
+                        "btn-size-extra large",
+                        'default',
+                        "btn-add-cart"
+                    ];
+
+                    $icon = 'minus';
+                    $icon2 = 'plus';
+                ?>
 
                 <!-- Add to Cart Block -->
                 <div class="product-details-actions">
                     <div class="quantity-selector">
                         <label>Quantité</label>
                         <div class="quantity-controls">
-                            <?= Component::render('Button', [
-    'id' => 'qty-minus',
-    'class' => 'qty-btn',
-    'variant' => 'primary',
-    'style' => 'outline',
-    'size' => 'medium',
-    'icon' => 'minus',
-    'ariaLabel' => 'Decrease quantity'
-])?>
+                            <button class="<?= implode(' ', array_filter($classes))?>" onclick="updateQuantity('decrement')">
+                                <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)){ ?>
+                                    <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
+                                <?php } ?>
+                            </button>
                             <span class="qty-value" id="qty-value">1</span>
-                            <?= Component::render('Button', [
-    'id' => 'qty-plus',
-    'class' => 'qty-btn',
-    'variant' => 'primary',
-    'style' => 'outline',
-    'size' => 'medium',
-    'icon' => 'plus',
-    'ariaLabel' => 'Increase quantity'
-])?>
+                            <button class="<?= implode(' ', array_filter($classes))?>" onclick="updateQuantity('increment')">
+                                <?php if ($icon2 && method_exists('\App\Helpers\IconHelper', $icon2)){ ?>
+                                    <?=\App\Helpers\IconHelper::$icon2(24, 'currentColor')?>
+                                <?php } ?>
+                            </button>
                         </div>
                     </div>
 
-                    <?= Component::render('Button', [
-    'id' => 'btn-add-cart',
-    'class' => 'add-to-cart-btn',
-    'variant' => 'primary',
-    'style' => 'solid',
-    'size' => 'extra large',
-    'label' => 'AJOUTER AU PANIER'
-])?>
+                     <button class="btn btn-style-solid btn-variant-primary btn-size-extra-large add-to-cart-btn" onclick="abrirModal('<?= htmlspecialchars($id)?>')">
+                               AJOUTER AU PANIER
+                            </button>
                 </div>
 
                 <!-- Shipping Info -->
                 <div class="product-details-shipping">
                     <div class="shipping-item">
                         <img src="/assets/img/icons/icon-clock.svg" alt="Clock">
-                        <span>En stock, expédié sous 24H</span>
+                        <span>En stock</span>
                     </div>
                     <div class="shipping-item">
                         <img src="/assets/img/icons/icon-truck.svg" alt="Truck">
-                        <span>Livraison Standard par Mondial Relay : 4,90 €.</span>
+                        <span>Livraison Standard par Mondial Relay : 10,00 €.</span>
                     </div>
-                    <div class="shipping-item">
+               <!--     <div class="shipping-item">
                         <img src="/assets/img/icons/icon-calendar.svg" alt="Calendar">
                         <span>Livraison estimée entre le 22/01 et le 28/01</span>
                     </div>
                 </div>
+				-->
 
                 <!-- Divider -->
                 <hr class="divider">
 
+				
                 <!-- Description -->
-                <div class="product-details-description">
+                <!--div class="product-details-description">
                     <h2>DESCRIPTION</h2>
                     <ul>
                         <li>T-Shirt noir, col rond et manches courtes</li>
@@ -138,7 +148,7 @@ elseif (strpos(strtoupper($productId), 'COQUE') !== false) {
                         <li>Ce produit taille normalement, nous vous conseillons de prendre votre taille habituelle</li>
                     </ul>
                 </div>
-
+				-->
                 <!-- Composition & Washing -->
                 <div class="product-details-composition">
                     <h3>Composition et lavage:</h3>
@@ -155,3 +165,56 @@ elseif (strpos(strtoupper($productId), 'COQUE') !== false) {
         </div>
     </div>
 </section>
+
+<script>
+    var typeM = '';
+    function updateQuantity(value) {
+        const qtyValue = document.getElementById('qty-value');
+        let currentValue = parseInt(qtyValue.textContent);
+
+        if (value === 'increment') {
+            currentValue++;
+        } else if (value === 'decrement' && currentValue > 1) {
+            currentValue--;
+        }
+
+        qtyValue.textContent = currentValue;
+    }
+
+    function sizeSelect(type){
+       const btnType = document.getElementById(type);
+       document.querySelectorAll('.size-button').forEach(btn => btn.classList.remove('active'));
+       btnType.classList.add('active');
+       typeM = type.split('_')[1];
+    }
+
+    function abrirModal(id){
+        const qtyValue = document.getElementById('qty-value');
+        let currentValue = parseInt(qtyValue.textContent);
+    
+        var typeP = '1';
+        if(typeM == 's'){
+             typeP = '132';
+        }
+        if(typeM == 'm'){
+            typeP = '133';
+        }
+
+        if(typeM == 'l'){
+            typeP = '134';
+        }
+
+        if(typeM == 'xl'){
+            typeP = '135';
+        }
+
+         if(typeM == 'blanc'){
+            typeP = '163';
+        }
+
+         if(typeM == 'noir'){
+            typeP = '164';
+        }
+        openCustomModal('Merchandising Yanns', 'https://checkout.lebillet.eu/1816?produto='+id+'_' + typeP+'&qtd='+currentValue);
+    }
+</script>
