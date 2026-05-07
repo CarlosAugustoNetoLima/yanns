@@ -1,7 +1,14 @@
 <?php
-// Generate unique ID for this instance if not provided
+use App\Helpers\I18n;
+
 $headerId = $id ?? uniqid('header_');
 $activePage = $activePage ?? 'home';
+$currentLang = I18n::current();
+$languages = [
+    'fr' => I18n::t('lang.fr'),
+    'pt' => I18n::t('lang.pt'),
+    'en' => I18n::t('lang.en'),
+];
 ?>
 <header class="header" id="<?= $headerId?>">
         <!-- Desktop Header -->
@@ -26,9 +33,33 @@ $activePage = $activePage ?? 'home';
                 </div>
 
                 <div class="header-actions">
-                        <a href="/" class="icon-link">
-                                <?=\App\Helpers\IconHelper::web(24, 'var(--color-neutral-600)')?>
-                        </a>
+                        <div class="lang-switcher" data-lang-switcher>
+                                <button
+                                        type="button"
+                                        class="lang-switcher-toggle icon-link"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                        aria-label="<?= htmlspecialchars(I18n::t('lang.label')) ?>"
+                                >
+                                        <?=\App\Helpers\IconHelper::web(24, 'var(--color-neutral-600)')?>
+                                        <span class="lang-switcher-current"><?= strtoupper(htmlspecialchars($currentLang)) ?></span>
+                                </button>
+                                <ul class="lang-switcher-menu" role="menu">
+                                        <?php foreach ($languages as $code => $label): ?>
+                                                <li role="none">
+                                                        <a
+                                                                role="menuitem"
+                                                                href="?lang=<?= htmlspecialchars($code) ?>"
+                                                                class="lang-switcher-item<?= $code === $currentLang ? ' active' : '' ?>"
+                                                                hreflang="<?= htmlspecialchars($code) ?>"
+                                                        >
+                                                                <span class="lang-switcher-code"><?= strtoupper(htmlspecialchars($code)) ?></span>
+                                                                <span class="lang-switcher-name"><?= htmlspecialchars($label) ?></span>
+                                                        </a>
+                                                </li>
+                                        <?php endforeach; ?>
+                                </ul>
+                        </div>
                 </div>
         </div>
 
@@ -71,6 +102,25 @@ $activePage = $activePage ?? 'home';
                         }
 
                         if (toggle) toggle.addEventListener('click', toggleMenu);
+
+                        // Lang switcher dropdown (desktop)
+                        const switcher = header.querySelector('[data-lang-switcher]');
+                        if (switcher) {
+                                const button = switcher.querySelector('.lang-switcher-toggle');
+                                if (button) {
+                                        button.addEventListener('click', function (e) {
+                                                e.stopPropagation();
+                                                const open = switcher.classList.toggle('open');
+                                                button.setAttribute('aria-expanded', open ? 'true' : 'false');
+                                        });
+                                        document.addEventListener('click', function (e) {
+                                                if (!switcher.contains(e.target)) {
+                                                        switcher.classList.remove('open');
+                                                        button.setAttribute('aria-expanded', 'false');
+                                                }
+                                        });
+                                }
+                        }
                 })();
         </script>
 </header>

@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\Component;
+use App\Helpers\I18n;
 
 // Updated to use the exactly mapped `CardCalendar` props: date, city, variant
 $dates = [
@@ -56,7 +57,7 @@ foreach ($events as $ev) {
     $doorsOpenText = '';
     if (!empty($ev->date_opening)) {
         $dateOpen = new DateTime($ev->date_opening);
-        $doorsOpenText = 'Ouverture des portes: ' . $dateOpen->format('H') . 'h';
+        $doorsOpenText = I18n::t('dates.doors_open', ['time' => $dateOpen->format('H')]);
     }
 
     array_push($dates, [
@@ -81,7 +82,7 @@ $dateNow = new DateTime();
 
         <header class="dates-page-header">
             <h2 class="dates-page-title">
-                <span class="dates-page-title-text">DATES DE TOURNÉE</span>
+                <span class="dates-page-title-text"><?= htmlspecialchars(I18n::t('dates.tour_title')) ?></span>
                 <span class="dates-page-title-year"><?=  $dateNow->format('Y'); ?></span>
             </h2>
         </header>
@@ -89,7 +90,7 @@ $dateNow = new DateTime();
         <div class="dates-page-content">
             <!-- Rotated Sidebar Text -->
             <div class="dates-page-sidebar">
-                <span class="dates-sidebar-text">BILLETTERIE<br>OFFICIELLE</span>
+                <span class="dates-sidebar-text"><?= I18n::t('dates.tickets_official') ?></span>
             </div>
 
             <!-- Grid using specifically tailored CardCalendars -->

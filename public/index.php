@@ -23,6 +23,17 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// I18n bootstrap. Se houve troca via ?lang=, redirecciona para a mesma URL sem o param.
+$switchedLang = \App\Helpers\I18n::init();
+if ($switchedLang !== null) {
+    $cleanQuery = $_GET;
+    unset($cleanQuery['lang']);
+    $cleanPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
+    $redirect  = $cleanPath . (empty($cleanQuery) ? '' : '?' . http_build_query($cleanQuery));
+    header('Location: ' . $redirect, true, 302);
+    exit;
+}
+
 // Basic Routing (very simple for now)
 $request = $_SERVER['REQUEST_URI'];
 $path = parse_url($request, PHP_URL_PATH);
@@ -116,23 +127,37 @@ $eventsAll = $eventsArray;
 $eventsLimit = array_slice($eventsArray, 0, 6);
 
 $checkoutUrl = 'https://checkout.lebillet.eu/';
+$lebilletEventId = 1816;
+
+// API endpoint: /api/products  → JSON com produtos do lebillet
+if ($path === '/api/products') {
+    header('Content-Type: application/json; charset=utf-8');
+    $service = new \App\Services\LeBilletService();
+    echo json_encode(
+        $service->getProducts($lebilletEventId),
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
+    exit;
+}
 
 if (array_key_exists($path, $routes)) {
     $activePage = $routes[$path];
 
     // Page titles
-    $pageTitles = [
-        'home' => 'Home',
-        'musique' => 'Musique & Vidéo',
-        'dates' => 'Dates',
-        'collections' => 'COLLECTIONS',
-        'biographie' => 'Biographie',
-        'product_details' => 'Détails du Produit'
+    $pageTitleMap = [
+        'home' => 'page.home',
+        'musique' => 'page.music',
+        'dates' => 'page.dates',
+        'collections' => 'page.collections',
+        'biographie' => 'page.bio',
+        'product_details' => 'page.product',
     ];
-    $pageTitle = $pageTitles[$activePage] ?? 'YANNS';
+    $pageTitle = isset($pageTitleMap[$activePage])
+        ? \App\Helpers\I18n::t($pageTitleMap[$activePage])
+        : 'YANNS';
     ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?= htmlspecialchars(\App\Helpers\I18n::current()) ?>">
 
     <head>
         <meta charset="UTF-8">
@@ -140,6 +165,7 @@ if (array_key_exists($path, $routes)) {
         <title>YANNS -
             <?= htmlspecialchars($pageTitle) ?>
         </title>
+        <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
         <link rel="stylesheet" href="/assets/css/styles.css">
         <link rel="stylesheet" href="/assets/css/components/cart-modal.css">
         <!-- Toastify CSS -->
@@ -162,8 +188,20 @@ if (array_key_exists($path, $routes)) {
             elseif ($activePage === 'collections'): ?>
                 <?= Component::render('Collections') ?>
                 <?php
-            elseif ($activePage === 'product_details'): ?>
-                <?= Component::render('ProductDetails') ?>
+            elseif ($activePage === 'product_details'):
+                $productService = new \App\Services\LeBilletService();
+                $requestedId = isset($_GET['id']) ? (string) $_GET['id'] : '';
+                $product = $productService->getProduct($lebilletEventId, $requestedId);
+                $sibling = ($product && $product['type'] === 'casquette')
+                    ? $productService->getCasquetteSibling($lebilletEventId, $requestedId)
+                    : null;
+                ?>
+                <?= Component::render('ProductDetails', [
+                    'product'      => $product,
+                    'sibling'      => $sibling,
+                    'eventId'      => $lebilletEventId,
+                    'checkoutUrl'  => $checkoutUrl,
+                ]) ?>
                 <?php
             elseif ($activePage === 'dates'): ?>
                 <?= Component::render('DatesPage', ['events' => $eventsAll, 'checkoutUrl' => $checkoutUrl]) ?>

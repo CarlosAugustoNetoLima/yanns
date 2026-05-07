@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Component;
+use App\Helpers\I18n;
 
 $dates = [
     [
@@ -45,7 +46,7 @@ foreach ($events as $ev) {
     </div>
 
     <h2 class="dates-title">
-        <span class="dates-title-text">DATES </span>
+        <span class="dates-title-text"><?= htmlspecialchars(I18n::t('dates.title')) ?> </span>
         <span class="dates-title-year"><?=  $dateNow->format('Y'); ?></span>
     </h2>
 
@@ -61,7 +62,7 @@ foreach ($events as $ev) {
     <div class="dates-action">
         <?= Component::render('Button', [
             'url' => '/dates',
-            'label' => 'VOIR PLUS',
+            'label' => I18n::t('dates.see_more'),
             'variant' => 'primary',
             'style' => 'solid',
             'size' => 'extra-large'

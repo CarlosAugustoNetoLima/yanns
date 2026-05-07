@@ -1,157 +1,149 @@
 <?php
 
 use App\Helpers\Component;
+use App\Helpers\I18n;
 
-// Get the product ID from URL query params (simulating database fetch)
-$productId = $_GET['id'] ?? 'CELLE/CELUI - T-SHIRT';
-$id = $_GET['idP'] ?? '10944';
-$type = $_GET['type'] ?? 'all';
+/** @var array|null $product */
+/** @var array|null $sibling */
+/** @var int $eventId */
+/** @var string $checkoutUrl */
 
-// Map specific data if we recognize typical products, else fallbacks
-$image = $_GET['image'] ?? '/assets/img/collections/tshirt-black.png';
-$price = $_GET['price'] ?? '00,00 €';
+if (!isset($product) || !$product) {
+    ?>
+    <section class="product-details-section">
+        <div class="product-details-container">
+            <a href="/collections" class="product-details-back">
+                <?= \App\Helpers\IconHelper::keyboardReturn(16, 'var(--color-primary-400-main)') ?>
+                <span><?= htmlspecialchars(I18n::t('product.return')) ?></span>
+            </a>
+            <h1 class="product-title"><?= htmlspecialchars(I18n::t('product.unavailable_title')) ?></h1>
+            <p><?= htmlspecialchars(I18n::t('product.unavailable_text')) ?></p>
+        </div>
+    </section>
+    <?php
+    return;
+}
+
+$variants    = $product['variants'] ?? [];
+$type        = $product['type'] ?? 'accessory';
+$priceLabel  = number_format((float) $product['price'], 2, ',', '.') . ' €';
+$showSizes   = $type === 'shirt' && count($variants) > 1;
+$showColors  = $type === 'casquette' && $sibling !== null;
+$defaultVariantId = $variants[0]['id'] ?? '1';
 
 ?>
 
-<section class="product-details-section">
+<section class="product-details-section"
+         data-product-id="<?= htmlspecialchars($product['id']) ?>"
+         data-event-id="<?= htmlspecialchars((string) $eventId) ?>"
+         data-checkout-url="<?= htmlspecialchars($checkoutUrl) ?>"
+         data-default-variant="<?= htmlspecialchars($defaultVariantId) ?>"
+         data-modal-title="<?= htmlspecialchars(I18n::t('product.modal_title')) ?>">
     <div class="product-details-container">
-        <!-- Back button -->
         <a href="/collections" class="product-details-back">
-            <?=\App\Helpers\IconHelper::keyboardReturn(16, 'var(--color-primary-400-main)')?>
-            <span>Retour</span>
+            <?= \App\Helpers\IconHelper::keyboardReturn(16, 'var(--color-primary-400-main)') ?>
+            <span><?= htmlspecialchars(I18n::t('product.return')) ?></span>
         </a>
 
-        <!-- Main Layout -->
         <div class="product-details-grid">
 
-            <!-- Left Side: Images -->
             <div class="product-details-gallery">
-                <div class="product-details-thumbnails">
-                    <div class="thumbnail active">
-                        <img src="<?= htmlspecialchars($image)?>" alt="Thumbnail">
+                <?php if (!empty($product['image'])): ?>
+                    <div class="product-details-thumbnails">
+                        <div class="thumbnail active">
+                            <img src="<?= htmlspecialchars($product['image']) ?>" alt="Thumbnail">
+                        </div>
                     </div>
-                    <!-- <div class="thumbnail">
-                        <img src="<?= htmlspecialchars($image)?>" alt="Thumbnail">
-                    </div> -->
-                </div>
-                <div class="product-details-main-image">
-                    <img src="<?= htmlspecialchars($image)?>" alt="<?= htmlspecialchars($productId)?>">
-                </div>
+                    <div class="product-details-main-image">
+                        <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                    </div>
+                <?php else: ?>
+                    <div class="product-details-main-image product-details-no-image">
+                        <span><?= htmlspecialchars(I18n::t('product.image_unavailable')) ?></span>
+                    </div>
+                <?php endif; ?>
             </div>
 
-            <!-- Right Side: Info -->
             <div class="product-details-info">
 
                 <div class="product-details-header">
-                    <h1 class="product-title">
-                        <?= htmlspecialchars($productId)?>
-                    </h1>
-                    <p class="product-price">
-                        <?= htmlspecialchars($price)?>
-                    </p>
+                    <h1 class="product-title"><?= htmlspecialchars($product['name']) ?></h1>
+                    <p class="product-price"><?= htmlspecialchars($priceLabel) ?></p>
                 </div>
 
-                <!-- Sizes -->
-                <?php if($type == 'shirt'){ ?>
+                <?php if ($showSizes): ?>
                     <div class="product-details-sizes">
-                        <div class="size-button" id="type_s" onclick="sizeSelect('type_s')">S</div>
-                        <div class="size-button" id="type_m" onclick="sizeSelect('type_m')">M</div>
-                        <div class="size-button" id="type_l" onclick="sizeSelect('type_l')">L</div>
-                        <div class="size-button" id="type_xl" onclick="sizeSelect('type_xl')">XL</div>
+                        <?php foreach ($variants as $i => $variant): ?>
+                            <div
+                                class="size-button<?= $i === 0 ? ' active' : '' ?>"
+                                data-variant-id="<?= htmlspecialchars($variant['id']) ?>"
+                                onclick="sizeSelect(this)"
+                            >
+                                <?= htmlspecialchars($variant['label']) ?>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php } ?>
+                <?php endif; ?>
 
-                <?php if($type == 'Casquette'){ ?>
+                <?php if ($showColors): ?>
                     <div class="product-details-sizes">
-                        <div class="size-button" id="type_blanc" onclick="sizeSelect('type_blanc')">Blanc</div>
-                        <div class="size-button" id="type_noir" onclick="sizeSelect('type_noir')">Noir</div>
+                        <?php
+                        $isBlanc = stripos($product['name'], 'blanc') !== false;
+                        $blanc = $isBlanc ? $product : $sibling;
+                        $noir  = $isBlanc ? $sibling : $product;
+                        ?>
+                        <a
+                            class="size-button<?= $isBlanc ? ' active' : '' ?>"
+                            href="/produto?id=<?= urlencode($blanc['id']) ?>"
+                            style="text-decoration:none;"
+                        ><?= htmlspecialchars(I18n::t('product.color.blanc')) ?></a>
+                        <a
+                            class="size-button<?= !$isBlanc ? ' active' : '' ?>"
+                            href="/produto?id=<?= urlencode($noir['id']) ?>"
+                            style="text-decoration:none;"
+                        ><?= htmlspecialchars(I18n::t('product.color.noir')) ?></a>
                     </div>
-                <?php } ?>
+                <?php endif; ?>
 
-                <?php 
-                    $classes = [
-                        'btn',
-                        "btn-style-outline",
-                        "btn-variant-primary",
-                        "btn-size-medium",
-                        'default',
-                        'btn-icon',
-                        "qty-btn"
-                    ];
-
-                    $classes2 = [
-                        'btn',
-                        "btn-style-solid",
-                        "btn-variant-primary",
-                        "btn-size-extra large",
-                        'default',
-                        "btn-add-cart"
-                    ];
-
-                    $icon = 'minus';
-                    $icon2 = 'plus';
+                <?php
+                $classes  = ['btn', 'btn-style-outline', 'btn-variant-primary', 'btn-size-medium', 'default', 'btn-icon', 'qty-btn'];
                 ?>
 
-                <!-- Add to Cart Block -->
                 <div class="product-details-actions">
                     <div class="quantity-selector">
-                        <label>Quantité</label>
+                        <label><?= htmlspecialchars(I18n::t('product.quantity')) ?></label>
                         <div class="quantity-controls">
-                            <button class="<?= implode(' ', array_filter($classes))?>" onclick="updateQuantity('decrement')">
-                                <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)){ ?>
-                                    <?=\App\Helpers\IconHelper::$icon(24, 'currentColor')?>
-                                <?php } ?>
+                            <button class="<?= implode(' ', $classes) ?>" onclick="updateQuantity('decrement')">
+                                <?= \App\Helpers\IconHelper::minus(24, 'currentColor') ?>
                             </button>
                             <span class="qty-value" id="qty-value">1</span>
-                            <button class="<?= implode(' ', array_filter($classes))?>" onclick="updateQuantity('increment')">
-                                <?php if ($icon2 && method_exists('\App\Helpers\IconHelper', $icon2)){ ?>
-                                    <?=\App\Helpers\IconHelper::$icon2(24, 'currentColor')?>
-                                <?php } ?>
+                            <button class="<?= implode(' ', $classes) ?>" onclick="updateQuantity('increment')">
+                                <?= \App\Helpers\IconHelper::plus(24, 'currentColor') ?>
                             </button>
                         </div>
                     </div>
 
-                     <button class="btn btn-style-solid btn-variant-primary btn-size-extra-large add-to-cart-btn" onclick="abrirModal('<?= htmlspecialchars($id)?>')">
-                               AJOUTER AU PANIER
-                            </button>
+                    <button
+                        class="btn btn-style-solid btn-variant-primary btn-size-extra-large add-to-cart-btn"
+                        onclick="addToCart()"
+                    ><?= htmlspecialchars(I18n::t('product.add_to_cart')) ?></button>
                 </div>
 
-                <!-- Shipping Info -->
                 <div class="product-details-shipping">
                     <div class="shipping-item">
                         <img src="/assets/img/icons/icon-clock.svg" alt="Clock">
-                        <span>En stock</span>
+                        <span><?= htmlspecialchars(I18n::t('product.in_stock')) ?></span>
                     </div>
                     <div class="shipping-item">
                         <img src="/assets/img/icons/icon-truck.svg" alt="Truck">
-                        <span>Livraison Standard par Mondial Relay : 10,00 €.</span>
-                    </div>
-               <!--     <div class="shipping-item">
-                        <img src="/assets/img/icons/icon-calendar.svg" alt="Calendar">
-                        <span>Livraison estimée entre le 22/01 et le 28/01</span>
+                        <span><?= htmlspecialchars(I18n::t('product.shipping')) ?></span>
                     </div>
                 </div>
-				-->
 
-                <!-- Divider -->
                 <hr class="divider">
 
-				
-                <!-- Description -->
-                <!--div class="product-details-description">
-                    <h2>DESCRIPTION</h2>
-                    <ul>
-                        <li>T-Shirt noir, col rond et manches courtes</li>
-                        <li>Collection "Celle/Celui" - modèle enfant</li>
-                        <li>Imprimé "Yanns" à l'avant et "Celle/Celui qu'il te faut" à l'arrière du t-shirt</li>
-                        <li>100% coton bio 155gr</li>
-                        <li>Ce produit taille normalement, nous vous conseillons de prendre votre taille habituelle</li>
-                    </ul>
-                </div>
-				-->
-                <!-- Composition & Washing -->
                 <div class="product-details-composition">
-                    <h3>Composition et lavage:</h3>
+                    <h3><?= htmlspecialchars(I18n::t('product.composition')) ?></h3>
                     <div class="composition-icons">
                         <img src="/assets/img/icons/icon-wash.svg" alt="Wash">
                         <img src="/assets/img/icons/icon-bleach.svg" alt="Bleach">
@@ -167,54 +159,39 @@ $price = $_GET['price'] ?? '00,00 €';
 </section>
 
 <script>
-    var typeM = '';
-    function updateQuantity(value) {
-        const qtyValue = document.getElementById('qty-value');
-        let currentValue = parseInt(qtyValue.textContent);
+    (function () {
+        const section = document.querySelector('.product-details-section');
+        if (!section) return;
 
-        if (value === 'increment') {
-            currentValue++;
-        } else if (value === 'decrement' && currentValue > 1) {
-            currentValue--;
-        }
+        const productId      = section.dataset.productId;
+        const eventId        = section.dataset.eventId;
+        const checkoutUrl    = section.dataset.checkoutUrl;
+        const defaultVariant = section.dataset.defaultVariant;
+        const modalTitle     = section.dataset.modalTitle || '';
+        let selectedVariant  = defaultVariant;
 
-        qtyValue.textContent = currentValue;
-    }
+        window.updateQuantity = function (action) {
+            const qtyValue = document.getElementById('qty-value');
+            let v = parseInt(qtyValue.textContent, 10);
+            if (action === 'increment') v++;
+            else if (action === 'decrement' && v > 1) v--;
+            qtyValue.textContent = v;
+        };
 
-    function sizeSelect(type){
-       const btnType = document.getElementById(type);
-       document.querySelectorAll('.size-button').forEach(btn => btn.classList.remove('active'));
-       btnType.classList.add('active');
-       typeM = type.split('_')[1];
-    }
+        window.sizeSelect = function (btn) {
+            document.querySelectorAll('.size-button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedVariant = btn.dataset.variantId || defaultVariant;
+        };
 
-    function abrirModal(id){
-        const qtyValue = document.getElementById('qty-value');
-        let currentValue = parseInt(qtyValue.textContent);
-    
-        var typeP = '1';
-        if(typeM == 's'){
-             typeP = '132';
-        }
-        if(typeM == 'm'){
-            typeP = '133';
-        }
-
-        if(typeM == 'l'){
-            typeP = '134';
-        }
-
-        if(typeM == 'xl'){
-            typeP = '135';
-        }
-
-         if(typeM == 'blanc'){
-            typeP = '163';
-        }
-
-         if(typeM == 'noir'){
-            typeP = '164';
-        }
-        openCustomModal('Merchandising Yanns', 'https://checkout.lebillet.eu/1816?produto='+id+'_' + typeP+'&qtd='+currentValue);
-    }
+        window.addToCart = function () {
+            const productVariantId = productId + '_' + selectedVariant;
+            const qty = parseInt(document.getElementById('qty-value').textContent, 10) || 1;
+            if (typeof openCustomModal === 'function') {
+                openCustomModal(modalTitle, eventId, productVariantId, qty);
+            } else {
+                window.location.href = checkoutUrl + eventId + '?produto=' + productVariantId + '&qtd=' + qty;
+            }
+        };
+    })();
 </script>

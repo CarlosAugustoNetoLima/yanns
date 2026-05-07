@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\Component;
+use App\Helpers\I18n;
 
 // Generate unique ID for this instance if not provided
 $cartModalId = $id ?? uniqid('cart_modal_');
@@ -9,8 +10,8 @@ $cartModalId = $id ?? uniqid('cart_modal_');
     <div class="cart-modal-container">
         <!-- Header -->
         <div class="cart-modal-header">
-            <h2 class="cart-modal-title">CARRINHO DE COMPRAS</h2>
-            <button class="cart-modal-close" aria-label="Close Cart" data-cart-close>
+            <h2 class="cart-modal-title"><?= htmlspecialchars(I18n::t('cart.title')) ?></h2>
+            <button class="cart-modal-close" aria-label="<?= htmlspecialchars(I18n::t('cart.close')) ?>" data-cart-close>
                 <?=\App\Helpers\IconHelper::close(16, 'var(--color-neutral-1100)') ?? '<img src="/assets/img/icons/icon-close.svg" alt="Close">'?>
             </button>
         </div>
@@ -23,7 +24,7 @@ $cartModalId = $id ?? uniqid('cart_modal_');
             <div class="cart-modal-products">
                 <a href="#" class="cart-modal-back" data-cart-close>
                     <?=\App\Helpers\IconHelper::keyboardReturn(16, 'var(--color-primary-400-main)') ?? '<img src="/assets/img/icons/icon-return.svg" alt="Return">'?>
-                    <span>Retour</span>
+                    <span><?= htmlspecialchars(I18n::t('cart.return')) ?></span>
                 </a>
 
                 <div id="cart-items-container">
@@ -40,13 +41,13 @@ $cartModalId = $id ?? uniqid('cart_modal_');
     'variant' => 'primary',
     'style' => 'outline',
     'size' => 'small',
-    'label' => 'CODE PROMO'
+    'label' => I18n::t('cart.promo')
 ])?>
                         <div class="cart-promo-input-wrapper hidden" id="cart-promo-input-wrapper">
                             <?= Component::render('Input', [
     'class' => 'cart-promo-input',
     'size' => 'Small',
-    'placeholder' => 'CODE PROMO',
+    'placeholder' => I18n::t('cart.promo'),
     'label' => false,
 ])?>
                         </div>
@@ -58,12 +59,12 @@ $cartModalId = $id ?? uniqid('cart_modal_');
                     <hr class="cart-modal-divider-sm">
 
                     <div class="cart-summary-fees">
-                        <span class="fee-text">Custos de operação com impostos</span>
+                        <span class="fee-text"><?= htmlspecialchars(I18n::t('cart.fees')) ?></span>
                         <span class="fee-price">€ 2,05</span>
                     </div>
 
                     <div class="cart-summary-total">
-                        <span class="total-text">Total</span>
+                        <span class="total-text"><?= htmlspecialchars(I18n::t('cart.total')) ?></span>
                         <span class="total-price" id="cart-total-price">€ 26,95</span>
                     </div>
 
@@ -72,7 +73,7 @@ $cartModalId = $id ?? uniqid('cart_modal_');
     'variant' => 'primary',
     'style' => 'solid',
     'size' => 'medium',
-    'label' => 'CONTINUER'
+    'label' => I18n::t('cart.continue')
 ])?>
                 </div>
             </div>

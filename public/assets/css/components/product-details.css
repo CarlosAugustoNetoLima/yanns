@@ -390,3 +390,15 @@
         width: 80px;
     }
 }
+.product-details-no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    background: #f4f4f4;
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+    padding: 32px;
+    font-family: 'Inter', sans-serif;
+}
