@@ -591,7 +591,7 @@
     border: 0;
     cursor: pointer;
     padding: 6px 10px;
-    border-radius: 6px;
+    border-radius: 0;
     color: inherit;
     font-family: inherit;
     transition: background-color 0.15s ease;
@@ -621,7 +621,7 @@
     list-style: none;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 8px;
+    border-radius: 0;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     opacity: 0;
     visibility: hidden;
@@ -708,7 +708,7 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     padding: 6px 10px;
-    border-radius: 4px;
+    border-radius: 0;
     color: var(--color-neutral-600, #666);
     transition: all 0.15s ease;
 }
