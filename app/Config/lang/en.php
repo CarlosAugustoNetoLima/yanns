@@ -20,8 +20,8 @@ return [
     'hero.aria'        => 'Hero Section',
 
     // Boutique
-    'boutique.heading_pink'  => 'I AM A SALE GOSSE',
-    'boutique.heading_black' => 'ALWAYS AVAILABLE',
+    'boutique.heading_pink'  => 'NEW COLLECTION',
+    'boutique.heading_black' => 'Coco Choco & Toké Toké',
     'boutique.discover'      => 'DISCOVER',
 
     // Dates section / page
