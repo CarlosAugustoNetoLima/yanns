@@ -43,13 +43,13 @@
 }
 
 .boutique-logo {
-    height: 64px;
+    height: 110px;
     width: auto;
     display: block;
 }
 
 .boutique-logo-toke {
-    height: 56px;
+    height: 96px;
 }
 
 /* ─── Carousel — vertical thumbs + main image ──────────────────── */
@@ -58,7 +58,7 @@
     gap: 12px;
     flex: 1 1 0;
     min-width: 0;
-    height: 540px;
+    align-items: stretch;
 }
 
 .boutique-carousel-thumbs {
@@ -114,6 +114,7 @@
     position: relative;
     flex: 1 1 0;
     min-width: 0;
+    aspect-ratio: 2 / 3;
     overflow: hidden;
     background: var(--color-neutral-300, #ececec);
 }
@@ -123,7 +124,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
@@ -163,7 +164,6 @@
     .boutique-carousel {
         width: 100%;
         max-width: 800px;
-        height: 480px;
     }
 }
 
@@ -200,7 +200,7 @@
     }
 
     .boutique-carousel-main {
-        aspect-ratio: 4 / 5;
+        aspect-ratio: 2 / 3;
         height: auto;
         flex: none;
         width: 100%;
