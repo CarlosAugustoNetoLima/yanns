@@ -1,16 +1,13 @@
 .dates-page-light {
     position: relative;
-    padding: 0 0 80px 0;
-    /* Padding bottom 80px per Figma */
+    padding: 100px 40px;
     background-color: var(--color-neutral-100);
-    padding-top: calc(var(--header-height, 106px) + 16px);
 }
 
 .dates-page-container {
     position: relative;
     z-index: 10;
     width: 100%;
-    /* From the image, the max-width seems close to the container width ~ 1240px */
     max-width: 1240px;
     margin: 0 auto;
     padding: 0 40px;
@@ -50,7 +47,6 @@
     display: flex;
     align-items: stretch;
     gap: 20px;
-    /* Reduced gap to accommodate the text */
 }
 
 /* Sidebar Rotated Text Container */
@@ -75,16 +71,14 @@
     line-height: 1.1;
     display: block;
     white-space: pre-wrap;
-    text-align: center;
+    text-align: right;
 }
 
 /* Grid System */
 .dates-page-grid {
     display: grid;
-    /* 4 columns */
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    /* Gap from the image looks closer to 16px/24px than 40px */
     width: 100%;
     flex: 1;
 }
@@ -99,7 +93,6 @@
 
 .card-calendar-image {
     width: 100%;
-    /* Maintain a square-ish ratio where SVG fills perfectly */
     aspect-ratio: 1 / 1;
     overflow: hidden;
 }
@@ -110,7 +103,6 @@
 
 .card-calendar-content {
     padding: 24px 16px;
-    /* Padding below image for text */
     text-align: center;
     display: flex;
     flex-direction: column;

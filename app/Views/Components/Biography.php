@@ -2,12 +2,17 @@
 use App\Helpers\Component;
 use App\Helpers\I18n;
 
+// Indexes consumidos pelo template:
+//   [0] hero collage grande (top-right)
+//   [1] stage section (4:5 ao lado de "Sur scène")
+//   [2] hero collage médio (bottom-left)
+//   [4] hero collage pequeno (centro, deslocado)
 $photos = [
-    '/assets/img/choco coco/1.jpeg',
-    '/assets/img/choco coco/2.jpeg',
-    '/assets/img/choco coco/3.jpeg',
-    '/assets/img/choco coco/4.jpeg',
-    '/assets/img/choco coco/5.jpeg',
+    '/assets/img/yanns/NZR_3590.jpg', // backstage portrait sorrindo, mic — dominante
+    '/assets/img/yanns/NZR_3771.jpg', // wide palco com público em luz vermelha — Sur scène
+    '/assets/img/yanns/NZR_3630.jpg', // palco em luz roxa, retrato cinemático
+    '/assets/img/yanns/NZR_3645.jpg', // (slot livre)
+    '/assets/img/yanns/NZR_3605.jpg', // backstage sentado nas escadas, contemplativo
 ];
 
 $stats = [

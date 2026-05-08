@@ -3,16 +3,14 @@ use App\Helpers\Component;
 use App\Helpers\I18n;
 
 $slides = [
-    '/assets/img/choco coco/1.jpeg',
-    '/assets/img/choco coco/2.jpeg',
-    '/assets/img/choco coco/3.jpeg',
-    '/assets/img/choco coco/4.jpeg',
-    '/assets/img/choco coco/5.jpeg',
-    '/assets/img/choco coco/1.jpeg',
-    '/assets/img/choco coco/2.jpeg',
-    '/assets/img/choco coco/3.jpeg',
-    '/assets/img/choco coco/4.jpeg',
-    '/assets/img/choco coco/5.jpeg',
+    '/assets/img/collections/choco coco/1.jpeg',
+    '/assets/img/collections/choco coco/2.jpeg',
+    '/assets/img/collections/choco coco/3.jpeg',
+    '/assets/img/collections/choco coco/4.jpeg',
+    '/assets/img/collections/choco coco/5.jpeg',
+    '/assets/img/collections/choco coco/NZR_3430.jpg',
+    '/assets/img/collections/toke toke/NZR_3449.jpg',
+    '/assets/img/collections/toke toke/NZR_3470.jpg',
 ];
 ?>
 <section class="boutique-section" data-name="Boutique section" id="boutique">
@@ -22,8 +20,8 @@ $slides = [
                 <?= htmlspecialchars(I18n::t('boutique.heading_pink')) ?>
             </h2>
             <div class="boutique-logos" aria-hidden="true">
-                <img src="/assets/img/coco choco.svg" alt="Coco Choco" class="boutique-logo boutique-logo-coco">
-                <img src="/assets/img/toke toke.svg" alt="Toké Toké" class="boutique-logo boutique-logo-toke">
+                <img src="/assets/img/collections/choco coco/coco choco.svg" alt="Coco Choco" class="boutique-logo boutique-logo-coco">
+                <img src="/assets/img/collections/toke toke/toke toke.svg" alt="Toké Toké" class="boutique-logo boutique-logo-toke">
             </div>
             <div class="boutique-action">
                 <?= Component::render('Button', [
@@ -66,13 +64,24 @@ $slides = [
 
             <div class="boutique-carousel-main" data-boutique-main>
                 <?php foreach ($slides as $i => $src): ?>
-                    <img
-                        src="<?= htmlspecialchars($src) ?>"
-                        alt="Coco Choco &amp; Toké Toké — <?= ($i + 1) ?>"
+                    <div
                         class="boutique-carousel-image<?= $i === 0 ? ' active' : '' ?>"
                         data-boutique-image="<?= $i ?>"
-                        loading="<?= $i === 0 ? 'eager' : 'lazy' ?>"
                     >
+                        <img
+                            src="<?= htmlspecialchars($src) ?>"
+                            alt=""
+                            class="boutique-carousel-bg"
+                            aria-hidden="true"
+                            loading="<?= $i === 0 ? 'eager' : 'lazy' ?>"
+                        >
+                        <img
+                            src="<?= htmlspecialchars($src) ?>"
+                            alt="Coco Choco &amp; Toké Toké — <?= ($i + 1) ?>"
+                            class="boutique-carousel-fg"
+                            loading="<?= $i === 0 ? 'eager' : 'lazy' ?>"
+                        >
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
