@@ -1,9 +1,12 @@
 .boutique-section {
     background-color: var(--color-neutral-200);
-    padding: var(--spacing-80);
+    padding: 60px var(--spacing-80);
     width: 100%;
+    min-height: 100vh;
     display: flex;
+    align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .boutique-container {
@@ -114,7 +117,8 @@
     position: relative;
     flex: 1 1 0;
     min-width: 0;
-    aspect-ratio: 2 / 3;
+    height: calc(100vh - 120px);
+    max-height: calc(100vh - 120px);
     overflow: hidden;
     background: var(--color-neutral-300, #ececec);
 }
@@ -164,6 +168,12 @@
     .boutique-carousel {
         width: 100%;
         max-width: 800px;
+    }
+
+    .boutique-carousel-main {
+        height: auto;
+        max-height: none;
+        aspect-ratio: 2 / 3;
     }
 }
 
