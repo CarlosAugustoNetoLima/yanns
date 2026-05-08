@@ -25,19 +25,19 @@
     justify-content: center;
 }
 
-.dates-bg-image {
+.dates-bg-logo {
+    display: flex;
+    justify-content: center;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-    /* Prevent the image from stretching unproportionally */
-    max-width: none;
-    opacity: 0.1;
-    /* Usually background texts like this have low opacity if not SVG specific, will depend on SVG export */
+    color: var(--color-neutral-1100);
+    opacity: 0.05;
+    line-height: 0;
 }
 
-/* We reset opacity to 1 assuming the SVG exported already handles the visual fading properly */
-.dates-bg-image {
-    opacity: 1;
+.dates-bg-logo svg {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
 }
 
 .dates-title {

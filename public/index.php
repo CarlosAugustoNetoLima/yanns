@@ -206,6 +206,12 @@ if (array_key_exists($path, $routes)) {
             elseif ($activePage === 'dates'): ?>
                 <?= Component::render('DatesPage', ['events' => $eventsAll, 'checkoutUrl' => $checkoutUrl]) ?>
                 <?php
+            elseif ($activePage === 'biographie'): ?>
+                <?= Component::render('Biography') ?>
+                <?php
+            elseif ($activePage === 'musique'): ?>
+                <?= Component::render('MusicVideo') ?>
+                <?php
             else: ?>
                 <section class="generic-page">
                     <div class="container">

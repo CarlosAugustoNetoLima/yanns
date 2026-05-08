@@ -8,7 +8,7 @@
 .videos-row {
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     gap: var(--spacing-16);
     padding: var(--spacing-40) var(--spacing-80);
@@ -17,7 +17,7 @@
 .videos-title {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     flex-shrink: 0;
     width: 213px;
     gap: var(--spacing-8);

@@ -40,9 +40,8 @@ foreach ($events as $ev) {
 ?>
 
 <section class="dates-section" data-name="Dates section">
-    <div class="dates-bg-wrapper" data-name="yanns dates">
-        <!-- SVG will be loaded here once exported from Figma -->
-        <img src="assets/img/yanns-dates-bg.svg" alt="" class="dates-bg-image">
+    <div class="dates-bg-wrapper" data-name="yanns dates" aria-hidden="true">
+        <span class="dates-bg-logo"><?= \App\Helpers\IconHelper::logo(200, 'currentColor') ?></span>
     </div>
 
     <h2 class="dates-title">

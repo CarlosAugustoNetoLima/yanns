@@ -6,7 +6,7 @@
     height: 608px;
     /* Based on Figma's hero height */
     overflow: hidden;
-    background-color: var(--color-neutral-0);
+    background-color: var(--color-neutral-100);
     display: flex;
     justify-content: center;
     align-items: center;

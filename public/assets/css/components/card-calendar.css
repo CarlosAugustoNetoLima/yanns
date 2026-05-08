@@ -161,3 +161,59 @@
     height: 61%;
     /* 183 / 300 roughly */
 }
+
+/* ─── Mobile / touch: já mostra a versão "hover" do card ─────── */
+@media (hover: none), (max-width: 768px) {
+    /* Card sem aspect-ratio fixo — altura flui pelo conteúdo,
+       grid `align-items: stretch` (padrão) deixa todos da mesma fila iguais */
+    .dates-page-grid .card-calendar {
+        aspect-ratio: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-calendar-default {
+        display: none;
+    }
+
+    .card-calendar-hover {
+        position: relative;
+        opacity: 1;
+        z-index: 20;
+        flex: 1 1 auto;
+        height: auto;
+        padding: 20px 16px;
+        justify-content: space-between;
+    }
+
+    .card-calendar-details {
+        margin-bottom: 16px;
+        gap: 6px;
+    }
+    .card-calendar-details p {
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    .card-calendar-button-wrap {
+        margin-bottom: 0;
+    }
+    .card-calendar-button-wrap .btn {
+        white-space: normal;
+        padding: 10px 12px;
+        height: auto;
+        min-height: 48px;
+        font-size: 14px;
+        line-height: 1.2;
+    }
+
+    .card-calendar-status {
+        font-size: 14px;
+    }
+}
+
+/* Garante igualdade de altura por linha no grid de datas */
+.dates-page-grid {
+    align-items: stretch;
+}

@@ -2,8 +2,8 @@
     position: relative;
     padding: 0 0 80px 0;
     /* Padding bottom 80px per Figma */
-    background-color: var(--color-neutral-0);
-    padding-top: calc(var(--header-height, 106px) + 40px);
+    background-color: var(--color-neutral-100);
+    padding-top: calc(var(--header-height, 106px) + 16px);
 }
 
 .dates-page-container {
@@ -19,7 +19,7 @@
 /* Header Section */
 .dates-page-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 .dates-page-title {
@@ -155,20 +155,22 @@
 
     .dates-page-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .dates-page-title {
+        flex-wrap: wrap;
+        gap: 8px;
+        row-gap: 4px;
     }
 
     .dates-page-title-text,
     .dates-page-title-year {
-        font-size: 36px;
+        font-size: clamp(28px, 8vw, 40px);
+        line-height: 1.05;
     }
 
     .dates-page-container {
         padding: 0 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .dates-page-grid {
-        grid-template-columns: 1fr;
     }
 }

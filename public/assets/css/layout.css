@@ -1,6 +1,7 @@
 /* Header General */
 .header {
     background-color: var(--color-neutral-100);
+    color: var(--color-neutral-1100);
     width: 100%;
     /* Reset padding for mobile, handled in media query for desktop */
     padding: 0;
@@ -25,6 +26,11 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+html,
+body {
+    background-color: var(--color-neutral-100);
 }
 
 .main-content {

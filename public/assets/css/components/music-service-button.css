@@ -22,6 +22,15 @@
     position: relative;
     /* Ensure only icon is visible initially */
     justify-content: flex-start;
+    text-decoration: none;
+}
+
+.music-service-button:hover,
+.music-service-button:focus,
+.music-service-button:active,
+.music-service-button .music-service-label,
+.music-service-button .music-service-name {
+    text-decoration: none;
 }
 
 .music-service-button:hover {

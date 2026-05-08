@@ -119,6 +119,56 @@ class I18n
         return $value;
     }
 
+    /**
+     * Formata um número de visualizações conforme o idioma actual.
+     *   FR: 1500 → "1,5 k"; 1_600_000 → "1,6 M"
+     *   PT: 1500 → "1,5 mil"; 1_600_000 → "1,6 mi"
+     *   EN: 1500 → "1.5K"; 1_600_000 → "1.6M"
+     */
+    public static function formatViews(int $count): string
+    {
+        if (!self::$booted) self::init();
+        $lang = self::$current;
+
+        $format = function (float $val) use ($lang): string {
+            // 1 casa decimal, sem zero à direita
+            $s = number_format($val, 1, '.', '');
+            if (substr($s, -2) === '.0') $s = substr($s, 0, -2);
+            // Vírgula como decimal em FR/PT
+            if ($lang !== 'en') $s = str_replace('.', ',', $s);
+            return $s;
+        };
+
+        if ($count >= 1_000_000) {
+            $v = $format($count / 1_000_000);
+            return match ($lang) {
+                'en' => $v . 'M',
+                'pt' => $v . ' mi',
+                default => $v . ' M',
+            };
+        }
+        if ($count >= 1_000) {
+            $v = $format($count / 1_000);
+            return match ($lang) {
+                'en' => $v . 'K',
+                'pt' => $v . ' mil',
+                default => $v . ' k',
+            };
+        }
+        return (string) $count;
+    }
+
+    /**
+     * Formata "tempo atrás" plural-aware: (4, 'year') → "il y a 4 ans" / "há 4 anos" / "4 years ago"
+     */
+    public static function formatTimeAgo(int $value, string $unit): string
+    {
+        if (!self::$booted) self::init();
+        $key = 'videos.time.' . $unit . ($value > 1 ? 's' : '');
+        $unitText = self::t($key);
+        return self::t('videos.time_ago', ['n' => $value, 'unit' => $unitText]);
+    }
+
     private static function loadTranslations(string $lang): void
     {
         $file = __DIR__ . '/../Config/lang/' . $lang . '.php';

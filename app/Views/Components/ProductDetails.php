@@ -54,7 +54,7 @@ $defaultVariantId = $variants[0]['id'] ?? '1';
                             <img src="<?= htmlspecialchars($product['image']) ?>" alt="Thumbnail">
                         </div>
                     </div>
-                    <div class="product-details-main-image">
+                    <div class="product-details-main-image" data-zoom>
                         <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
                     </div>
                 <?php else: ?>
@@ -183,6 +183,38 @@ $defaultVariantId = $variants[0]['id'] ?? '1';
             btn.classList.add('active');
             selectedVariant = btn.dataset.variantId || defaultVariant;
         };
+
+        // ─── Zoom acompanhando cursor na imagem principal ───────────
+        (function () {
+            const zoomBox = section.querySelector('[data-zoom]');
+            if (!zoomBox) return;
+            const img = zoomBox.querySelector('img');
+            if (!img) return;
+
+            const ZOOM_SCALE = 2.4;
+
+            function onEnter() {
+                img.style.transition = 'transform 0.18s ease';
+                img.style.transform = 'scale(' + ZOOM_SCALE + ')';
+                zoomBox.style.cursor = 'zoom-in';
+            }
+            function onLeave() {
+                img.style.transition = 'transform 0.25s ease';
+                img.style.transform = 'scale(1)';
+                img.style.transformOrigin = 'center center';
+            }
+            function onMove(e) {
+                const rect = zoomBox.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                img.style.transition = 'transform-origin 0s';
+                img.style.transformOrigin = x + '% ' + y + '%';
+            }
+
+            zoomBox.addEventListener('mouseenter', onEnter);
+            zoomBox.addEventListener('mouseleave', onLeave);
+            zoomBox.addEventListener('mousemove', onMove);
+        })();
 
         window.addToCart = function () {
             const productVariantId = productId + '_' + selectedVariant;
