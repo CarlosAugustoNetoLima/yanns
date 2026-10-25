@@ -1,4 +1,19 @@
 <?php
+// Autoloader (o mesmo de public/index.php), para funcionar quando a página
+// é acedida diretamente em /styleguide.php
+spl_autoload_register(function ($class) {
+    $prefix = 'App\\';
+    $base_dir = __DIR__ . '/../app/';
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+    $file = $base_dir . str_replace('\\', '/', substr($class, $len)) . '.php';
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
 require_once __DIR__ . '/../app/Helpers/Component.php';
 require_once __DIR__ . '/../app/Helpers/IconHelper.php';
 use App\Helpers\Component;
