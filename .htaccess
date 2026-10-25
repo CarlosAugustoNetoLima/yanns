@@ -2,3 +2,50 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_URI} !^/public/
 RewriteRule ^(.*)$ public/$1 [L]
+
+# ───────────────────────────────────────────────────────────────
+# Performance (PageSpeed): compressão + cache de assets estáticos.
+# Tudo protegido por <IfModule>: se o módulo não existir no host,
+# o bloco é ignorado e o site continua funcionando normalmente.
+# ───────────────────────────────────────────────────────────────
+
+# Garante o MIME correto para WebP em Apache mais antigo
+<IfModule mod_mime.c>
+    AddType image/webp .webp
+</IfModule>
+
+# Compressão de recursos de texto (HTML/CSS/JS/SVG/JSON)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript text/javascript
+    AddOutputFilterByType DEFLATE application/json application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Cache-Control via expires
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Imagens e vídeo (assets versionados por conteúdo / raramente mudam)
+    ExpiresByType image/webp                "access plus 1 year"
+    ExpiresByType image/svg+xml             "access plus 1 year"
+    ExpiresByType image/png                 "access plus 1 year"
+    ExpiresByType image/jpeg                "access plus 1 year"
+    ExpiresByType video/mp4                 "access plus 1 year"
+
+    # CSS / JS (mudam com deploy — cache curto; os carregados no index.php
+    # têm cache-busting ?v=filemtime, então mudam de imediato no deploy)
+    ExpiresByType text/css                  "access plus 1 day"
+    ExpiresByType application/javascript    "access plus 1 day"
+    ExpiresByType text/javascript           "access plus 1 day"
+
+    # HTML — sempre revalida (conteúdo dinâmico)
+    ExpiresByType text/html                 "access plus 0 seconds"
+</IfModule>
+
+# immutable para mídia de longa duração (reforça o cache do navegador)
+<IfModule mod_headers.c>
+    <FilesMatch "\.(webp|svg|png|jpe?g|mp4|woff2?)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

@@ -248,6 +248,17 @@ body {
 }
 
 /* Cart Icon & Badge Styling */
+.header-actions button.cart-icon-wrapper {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.header-actions button.cart-icon-wrapper:hover svg {
+    color: var(--color-primary-400-main);
+}
+
 .header-actions .cart-icon-wrapper {
     position: relative;
     display: flex;

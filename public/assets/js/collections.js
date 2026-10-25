@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
         noImage: grid.dataset.msgNoImage || 'Image coming soon',
     };
 
+    // Rótulos de cor localizados (ex.: Blanc/Noir em FR), vindos do data-* do grid.
+    const colorLabels = {
+        blanc: grid.dataset.colorBlanc || 'Blanc',
+        noir:  grid.dataset.colorNoir  || 'Noir',
+    };
+
     const formatPrice = (price) => {
         const n = Number(price) || 0;
         return n.toFixed(2).replace('.', ',') + ' €';
@@ -29,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageHtml = product.image
                 ? `<img src="${product.image}" alt="${product.name}">`
                 : `<div class="store-card-no-image">${messages.noImage}</div>`;
+            const colorHtml = (product.color && colorLabels[product.color])
+                ? `<span class="store-card-color">${colorLabels[product.color]}</span>`
+                : '';
             card.innerHTML = `
                 <div class="store-card-image">
                     ${imageHtml}
@@ -37,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="store-card-title">
                         <p>${product.name}</p>
                     </div>
+                    ${colorHtml}
                     <p class="store-card-price">${formatPrice(product.price)}</p>
                 </div>
             `;

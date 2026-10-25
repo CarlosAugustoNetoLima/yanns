@@ -8,11 +8,11 @@ use App\Helpers\I18n;
 //   [2] hero collage médio (bottom-left)
 //   [4] hero collage pequeno (centro, deslocado)
 $photos = [
-    '/assets/img/yanns/NZR_3590.jpg', // backstage portrait sorrindo, mic — dominante
-    '/assets/img/yanns/NZR_3771.jpg', // wide palco com público em luz vermelha — Sur scène
-    '/assets/img/yanns/NZR_3630.jpg', // palco em luz roxa, retrato cinemático
-    '/assets/img/yanns/NZR_3645.jpg', // (slot livre)
-    '/assets/img/yanns/NZR_3605.jpg', // backstage sentado nas escadas, contemplativo
+    '/assets/img/yanns/NZR_3590.webp', // backstage portrait sorrindo, mic — dominante
+    '/assets/img/yanns/NZR_3771.webp', // wide palco com público em luz vermelha — Sur scène
+    '/assets/img/yanns/NZR_3630.webp', // palco em luz roxa, retrato cinemático
+    '/assets/img/yanns/NZR_3645.webp', // (slot livre)
+    '/assets/img/yanns/NZR_3605.webp', // backstage sentado nas escadas, contemplativo
 ];
 
 $stats = [

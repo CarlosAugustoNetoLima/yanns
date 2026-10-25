@@ -1,4 +1,6 @@
 <?php
+use App\Helpers\I18n;
+
 // Props: state ('Default', 'Hover'), dayName ('mar.'), dayNumber ('14'), locationText ('Istres, France'), timeAndVenue ("sam., 19:00 · L'Usine")
 // Using 'Default' as fallback state
 $state = $state ?? 'Default';
@@ -9,21 +11,30 @@ $timeAndVenue = $timeAndVenue ?? "sam., 19:00 · L'Usine";
 $idEvent = $idEvent ?? '1';
 $event = $event ?? '';
 $checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
-$ticketUrl = $ticketUrl ?? 'https://www.ticketmaster.fr/fr/manifestation/yanns-billet/idmanif/652396';
+$ticketUrl = $ticketUrl ?? '';
+$isFree = $isFree ?? false;
 
+$hasTicket = !empty($ticketUrl);
 $isDefault = $state === 'Default';
 $isHover = $state === 'Hover';
 
 $cardClass = 'card-date ' . strtolower($state);
+if (!$hasTicket) {
+    $cardClass .= ' no-ticket';
+}
+if ($isFree) {
+    $cardClass .= ' free';
+}
 // Adding a fixed class reference for easier targeted styling in context of styleguide previews
 if (isset($class)) {
     $cardClass .= ' ' . $class;
 }
 ?>
 <div class="<?= htmlspecialchars($cardClass) ?>"
-    onclick="openCustomModalNew('<?php echo htmlspecialchars($event); ?>', '<?php echo $ticketUrl; ?>')">
+    <?php if ($hasTicket && !$isFree): ?>onclick="openCustomModalNew('<?php echo htmlspecialchars($event); ?>', '<?php echo $ticketUrl; ?>')"<?php endif; ?>>
+
     <!-- Hover Text Overlay -->
-    <div class="card-date-hover-text">BILLETTERIE</div>
+    <div class="card-date-hover-text"><?= $isFree ? htmlspecialchars(I18n::t('dates.free')) : ($hasTicket ? 'BILLETTERIE' : 'BIENTÔT') ?></div>
 
     <div class="card-date-left">
         <p class="card-date-day-name">

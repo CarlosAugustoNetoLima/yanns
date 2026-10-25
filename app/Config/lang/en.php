@@ -24,6 +24,10 @@ return [
     'boutique.heading_black' => 'Coco Choco & Toké Toké',
     'boutique.discover'      => 'DISCOVER',
 
+    // Announcement marquee (above hero)
+    'announcement.text' => 'New Collection',
+    'announcement.cta'  => 'Discover',
+
     // Dates section / page
     'dates.title'             => 'DATES',
     'dates.tour_title'        => 'TOUR DATES',
@@ -31,6 +35,8 @@ return [
     'dates.tickets_official'  => 'OFFICIAL<br>TICKETS',
     'dates.doors_open'        => 'Doors open: {time}h',
     'dates.buy_ticket'        => 'TICKETS',
+    'dates.free'              => 'FREE',
+    'dates.time_tbd'          => 'Time to be announced',
 
     // Product details
     'product.return'              => 'Back',
@@ -38,10 +44,21 @@ return [
     'product.color'               => 'Color',
     'product.color.blanc'         => 'White',
     'product.color.noir'          => 'Black',
+    'variant.child'               => 'Kids',
+    'variant.adult'               => 'Adult',
+    'variant.male'                => 'Men',
+    'variant.female'              => 'Women',
+    'variant.boy'                 => 'Boy',
+    'variant.girl'                => 'Girl',
+    'product.type'                => 'Type',
     'product.quantity'            => 'Quantity',
     'product.add_to_cart'         => 'ADD TO CART',
     'product.in_stock'            => 'In stock',
-    'product.shipping'            => 'Standard delivery via Mondial Relay: €10.00.',
+    'product.out_of_stock'        => 'Sold out',
+    'product.stock_low'           => 'Only %d left in stock!',
+    'product.stock_low_js'        => 'Only %d left in stock!',
+    'product.stock_limit'         => 'Maximum stock reached (%d).',
+    'product.also_available'      => 'Also available',
     'product.composition'         => 'Composition and washing:',
     'product.image_unavailable'   => 'Image coming soon',
     'product.unavailable_title'   => 'Product unavailable',
@@ -52,6 +69,11 @@ return [
     'collections.loading' => 'Loading products...',
     'collections.error'   => 'Error loading products.',
     'collections.empty'   => 'No products available.',
+
+    // Maillot banner (new collection) — descontinuado
+    // 'maillot_banner.label' => 'New Collection',
+    // 'maillot_banner.title' => 'Le Maillot',
+    // 'maillot_banner.cta'   => 'Discover',
 
     // Cart modal
     'cart.title'              => 'CART',

@@ -33,6 +33,10 @@ $languages = [
                 </div>
 
                 <div class="header-actions">
+                        <button class="cart-icon-wrapper" data-cart-open aria-label="Panier">
+                                <?= \App\Helpers\IconHelper::cartOutline(24, 'var(--color-neutral-600)') ?>
+                                <span class="cart-badge hidden">0</span>
+                        </button>
                         <div class="lang-switcher" data-lang-switcher>
                                 <button
                                         type="button"
@@ -49,7 +53,7 @@ $languages = [
                                                 <li role="none">
                                                         <a
                                                                 role="menuitem"
-                                                                href="?lang=<?= htmlspecialchars($code) ?>"
+                                                                href="<?= htmlspecialchars(I18n::switchUrl($code)) ?>"
                                                                 class="lang-switcher-item<?= $code === $currentLang ? ' active' : '' ?>"
                                                                 hreflang="<?= htmlspecialchars($code) ?>"
                                                         >

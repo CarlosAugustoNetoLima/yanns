@@ -9,9 +9,8 @@ namespace App\Helpers;
  *
  * Prioridade de detecção (em init()):
  *   1. Query string ?lang=XX  → seta cookie + (chamador deve redirecionar)
- *   2. Cookie yanns_lang
- *   3. Header Accept-Language do browser
- *   4. Fallback: 'fr'
+ *   2. Cookie yanns_lang       → escolha explícita do utilizador
+ *   3. Fallback: 'fr'          (francês por defeito, sem auto-deteção do browser)
  */
 class I18n
 {
@@ -50,13 +49,12 @@ class I18n
         }
 
         if ($switched === null) {
-            // 2. Cookie
+            // 2. Cookie (escolha explícita do utilizador)
             if (isset($_COOKIE[self::COOKIE_NAME]) && self::isSupported($_COOKIE[self::COOKIE_NAME])) {
                 self::$current = $_COOKIE[self::COOKIE_NAME];
             } else {
-                // 3. Accept-Language
-                $detected = self::detectFromAcceptLanguage($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
-                self::$current = $detected ?? self::DEFAULT_LANG;
+                // 3. Fallback: francês por defeito (sem auto-deteção do browser)
+                self::$current = self::DEFAULT_LANG;
             }
         }
 
@@ -80,6 +78,20 @@ class I18n
     public static function isSupported(string $lang): bool
     {
         return in_array($lang, self::SUPPORTED, true);
+    }
+
+    /**
+     * Monta a URL para trocar de idioma preservando a página atual e
+     * todos os parâmetros de query (ex.: ?id=12281 na página de produto).
+     * Sem isto, um href="?lang=xx" relativo apagaria a query existente.
+     */
+    public static function switchUrl(string $lang): string
+    {
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+        $query = $_GET;
+        unset($query['lang']);
+        $query['lang'] = $lang;
+        return $path . '?' . http_build_query($query);
     }
 
     /**
@@ -117,6 +129,28 @@ class I18n
         }
 
         return $value;
+    }
+
+    /**
+     * Localiza palavras de faixa etária dentro de um nome de produto vindo do
+     * LeBillet (que pode vir em PT, ex.: "Le Maillot Adulto"). Substitui apenas
+     * as palavras conhecidas (Criança/Adulto…) pela tradução no idioma actual,
+     * deixando o resto do nome intacto.
+     */
+    public static function localizeProductName(string $name): string
+    {
+        if (!self::$booted) self::init();
+
+        $map = [
+            'criança' => 'variant.child', 'crianca' => 'variant.child',
+            'enfant'  => 'variant.child', 'kids'    => 'variant.child', 'child' => 'variant.child',
+            'adulto'  => 'variant.adult', 'adulte'  => 'variant.adult', 'adult' => 'variant.adult',
+        ];
+
+        return preg_replace_callback('/\p{L}+/u', function (array $m) use ($map) {
+            $key = $map[mb_strtolower($m[0], 'UTF-8')] ?? null;
+            return $key ? self::t($key) : $m[0];
+        }, $name);
     }
 
     /**
@@ -189,33 +223,5 @@ class I18n
             ]
         );
         $_COOKIE[self::COOKIE_NAME] = $lang;
-    }
-
-    private static function detectFromAcceptLanguage(string $header): ?string
-    {
-        if ($header === '') return null;
-
-        $entries = [];
-        foreach (explode(',', $header) as $part) {
-            $part = trim($part);
-            if ($part === '') continue;
-            $bits = explode(';', $part);
-            $code = strtolower(trim($bits[0]));
-            $q = 1.0;
-            foreach (array_slice($bits, 1) as $b) {
-                if (preg_match('/^q\s*=\s*([\d.]+)/i', trim($b), $m)) {
-                    $q = (float) $m[1];
-                }
-            }
-            $entries[] = ['code' => $code, 'q' => $q];
-        }
-        usort($entries, fn($a, $b) => $b['q'] <=> $a['q']);
-
-        foreach ($entries as $e) {
-            // pt-PT, pt-BR, pt → pt
-            $base = explode('-', $e['code'])[0];
-            if (self::isSupported($base)) return $base;
-        }
-        return null;
     }
 }

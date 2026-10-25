@@ -13,6 +13,11 @@
     padding: 0 40px;
 }
 
+/* Year Group (one per tour year, repeats the header + grid pattern) */
+.dates-page-year-group + .dates-page-year-group {
+    margin-top: 80px;
+}
+
 /* Header Section */
 .dates-page-header {
     text-align: center;
@@ -46,7 +51,7 @@
 .dates-page-content {
     display: flex;
     align-items: stretch;
-    gap: 20px;
+    gap: 32px;
 }
 
 /* Sidebar Rotated Text Container */
@@ -78,7 +83,7 @@
 .dates-page-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 20px;
     width: 100%;
     flex: 1;
 }

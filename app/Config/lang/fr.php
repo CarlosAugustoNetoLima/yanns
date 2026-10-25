@@ -24,6 +24,10 @@ return [
     'boutique.heading_black' => 'Coco Choco & Toké Toké',
     'boutique.discover'      => 'DÉCOUVRIR',
 
+    // Faixa de novidades (marquee acima do hero)
+    'announcement.text' => 'Nouvelle Collection',
+    'announcement.cta'  => 'Découvrir',
+
     // Dates section / page
     'dates.title'             => 'DATES',
     'dates.tour_title'        => 'DATES DE TOURNÉE',
@@ -31,6 +35,8 @@ return [
     'dates.tickets_official'  => 'BILLETTERIE<br>OFFICIELLE',
     'dates.doors_open'        => 'Ouverture des portes: {time}h',
     'dates.buy_ticket'        => 'BILLETS',
+    'dates.free'              => 'GRATUIT',
+    'dates.time_tbd'          => 'Horaire à venir',
 
     // Product details
     'product.return'              => 'Retour',
@@ -38,10 +44,21 @@ return [
     'product.color'               => 'Couleur',
     'product.color.blanc'         => 'Blanc',
     'product.color.noir'          => 'Noir',
+    'variant.child'               => 'Enfant',
+    'variant.adult'               => 'Adulte',
+    'variant.male'                => 'Homme',
+    'variant.female'              => 'Femme',
+    'variant.boy'                 => 'Garçon',
+    'variant.girl'                => 'Fille',
+    'product.type'                => 'Type',
     'product.quantity'            => 'Quantité',
     'product.add_to_cart'         => 'AJOUTER AU PANIER',
     'product.in_stock'            => 'En stock',
-    'product.shipping'            => 'Livraison Standard par Mondial Relay : 10,00 €.',
+    'product.out_of_stock'        => 'Épuisé',
+    'product.stock_low'           => 'Plus que %d en stock !',
+    'product.stock_low_js'        => 'Plus que %d en stock !',
+    'product.stock_limit'         => 'Quantité maximale en stock atteinte (%d).',
+    'product.also_available'      => 'Également disponible',
     'product.composition'         => 'Composition et lavage:',
     'product.image_unavailable'   => 'Image bientôt disponible',
     'product.unavailable_title'   => 'Produit indisponible',
@@ -52,6 +69,11 @@ return [
     'collections.loading' => 'Chargement des produits...',
     'collections.error'   => 'Erreur de chargement des produits.',
     'collections.empty'   => 'Aucun produit disponible.',
+
+    // Maillot banner (nouvelle collection) — descontinuado
+    // 'maillot_banner.label' => 'Nouvelle Collection',
+    // 'maillot_banner.title' => 'Le Maillot',
+    // 'maillot_banner.cta'   => 'Découvrir',
 
     // Cart modal (interno do site, não o iframe)
     'cart.title'              => 'PANIER',

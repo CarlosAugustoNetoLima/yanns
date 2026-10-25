@@ -10,7 +10,7 @@
 .product-details-container {
     width: 100%;
     max-width: 1440px;
-    padding: 80px;
+    padding: 24px 80px 80px;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -61,6 +61,18 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    max-height: 624px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-400) transparent;
+}
+
+.product-details-thumbnails::-webkit-scrollbar {
+    width: 4px;
+}
+.product-details-thumbnails::-webkit-scrollbar-thumb {
+    background: var(--color-neutral-400);
+    border-radius: 2px;
 }
 
 .product-details-thumbnails .thumbnail {
@@ -144,12 +156,41 @@
     line-height: normal;
 }
 
+.product-details-color {
+    align-self: flex-start;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-neutral-1100);
+    border: 1px solid var(--color-neutral-600);
+    border-radius: 999px;
+    padding: 3px 12px;
+    line-height: normal;
+}
+
 .product-price {
     font-family: 'Inter', sans-serif;
     font-size: 24px;
     color: var(--color-neutral-600);
     margin: 0;
     line-height: normal;
+}
+
+/* Selector groups (Type / Size labels + buttons) */
+.product-details-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.selector-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-neutral-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 /* Sizes */
@@ -182,6 +223,66 @@
 .size-button.active {
     background-color: var(--color-neutral-1000);
     color: var(--color-neutral-100);
+}
+
+.size-button.active {
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Cross-link: outra versão do produto (ex.: Le Maillot Enfant ↔ Adulte) */
+.product-crosslink {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+    padding: 12px 16px;
+    border: 1px solid var(--color-neutral-1000);
+    background-color: transparent;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.product-crosslink:hover {
+    background-color: var(--color-neutral-200, #F1F2F4);
+}
+
+.product-crosslink-img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.product-crosslink-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.product-crosslink-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-neutral-600);
+}
+
+.product-crosslink-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-neutral-1000);
+}
+
+.product-crosslink-arrow {
+    margin-left: auto;
+    color: var(--color-neutral-1000);
+    flex-shrink: 0;
 }
 
 /* Add to Cart Actions */
@@ -350,7 +451,13 @@
     .product-details-thumbnails {
         flex-direction: row;
         width: 100%;
+        max-height: none;
         overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .product-details-thumbnails .thumbnail {
+        flex-shrink: 0;
     }
 
     .product-details-main-image {
@@ -361,9 +468,17 @@
     }
 }
 
+/* Desktop/tablet: botão e quantidade ficam lado a lado. Igualamos a altura do
+   botão à dos botões de quantité (48px) para alinharem na mesma linha. */
+@media (min-width: 768px) {
+    .add-to-cart-btn {
+        height: 48px;
+    }
+}
+
 @media (max-width: 767px) {
     .product-details-container {
-        padding: 40px 16px;
+        padding: 16px 16px 40px;
     }
 
     .product-details-actions {
@@ -389,6 +504,37 @@
         width: 80px;
     }
 }
+/* ─── Stock indicator ──────────────────────────────────────────── */
+.stock-indicator {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stock-ok  { color: var(--color-neutral-600); }
+.stock-low { color: var(--color-warning-600); }
+.stock-out { color: var(--color-error-600); }
+
+/* ─── Tamanho esgotado ─────────────────────────────────────────── */
+.size-button.sold-out {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    position: relative;
+    text-decoration: line-through;
+}
+
+/* Botão de compra desabilitado */
+.add-to-cart-btn:disabled {
+    background-color: var(--color-neutral-400);
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.add-to-cart-btn:disabled:hover {
+    opacity: 1;
+}
+
 .product-details-no-image {
     display: flex;
     align-items: center;

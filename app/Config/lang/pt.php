@@ -24,6 +24,10 @@ return [
     'boutique.heading_black' => 'Coco Choco & Toké Toké',
     'boutique.discover' => 'DESCOBRIR',
 
+    // Faixa de novidades (marquee acima do hero)
+    'announcement.text' => 'Nova Coleção',
+    'announcement.cta'  => 'Descobrir',
+
     // Dates section / page
     'dates.title' => 'DATAS',
     'dates.tour_title' => 'DATAS DA DIGRESSÃO',
@@ -31,6 +35,8 @@ return [
     'dates.tickets_official' => 'BILHETEIRA<br>OFICIAL',
     'dates.doors_open' => 'Abertura das portas: {time}h',
     'dates.buy_ticket' => 'BILHETES',
+    'dates.free' => 'GRATUITO',
+    'dates.time_tbd' => 'Horário a anunciar',
 
     // Product details
     'product.return' => 'Voltar',
@@ -38,10 +44,21 @@ return [
     'product.color' => 'Cor',
     'product.color.blanc' => 'Branco',
     'product.color.noir' => 'Preto',
+    'variant.child' => 'Criança',
+    'variant.adult' => 'Adulto',
+    'variant.male'                => 'Masculino',
+    'variant.female'              => 'Feminino',
+    'variant.boy'                 => 'Menino',
+    'variant.girl'                => 'Menina',
+    'product.type'                => 'Tipo',
     'product.quantity' => 'Quantidade',
     'product.add_to_cart' => 'ADICIONAR AO CARRINHO',
     'product.in_stock' => 'Em stock',
-    'product.shipping' => 'Entrega Standard por Mondial Relay: 10,00 €.',
+    'product.out_of_stock' => 'Esgotado',
+    'product.stock_low' => 'Apenas %d em stock!',
+    'product.stock_low_js' => 'Apenas %d em stock!',
+    'product.stock_limit' => 'Quantidade máxima em stock atingida (%d).',
+    'product.also_available' => 'Também disponível',
     'product.composition' => 'Composição e lavagem:',
     'product.image_unavailable' => 'Imagem em breve disponível',
     'product.unavailable_title' => 'Produto indisponível',
@@ -52,6 +69,11 @@ return [
     'collections.loading' => 'A carregar produtos...',
     'collections.error' => 'Erro ao carregar os produtos.',
     'collections.empty' => 'Nenhum produto disponível.',
+
+    // Maillot banner (nova coleção) — descontinuado
+    // 'maillot_banner.label' => 'Nova Coleção',
+    // 'maillot_banner.title' => 'Le Maillot',
+    // 'maillot_banner.cta' => 'Descobrir',
 
     // Cart modal
     'cart.title' => 'CARRINHO',

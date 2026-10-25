@@ -40,6 +40,12 @@ class LeBilletService
 
         $products = $this->parseProducts($html);
 
+        usort($products, function (array $a, array $b): int {
+            $orderA = $this->productConfig[$a['id']]['sort_order'] ?? 999;
+            $orderB = $this->productConfig[$b['id']]['sort_order'] ?? 999;
+            return $orderA <=> $orderB;
+        });
+
         $this->setCache($cacheKey, $products);
         return $products;
     }
@@ -54,18 +60,27 @@ class LeBilletService
         return null;
     }
 
-    public function getCasquetteSibling(int $eventId, string $productId): ?array
+    public function getColorSibling(int $eventId, string $productId): ?array
     {
-        $current = $this->getProduct($eventId, $productId);
-        if (!$current || $current['type'] !== 'casquette') {
+        $siblingId = $this->productConfig[$productId]['color_sibling'] ?? null;
+        if (!$siblingId) {
             return null;
         }
-        foreach ($this->getProducts($eventId) as $p) {
-            if ($p['type'] === 'casquette' && $p['id'] !== $productId) {
-                return $p;
-            }
+        return $this->getProduct($eventId, $siblingId);
+    }
+
+    /**
+     * Produto irmão por faixa etária (Le Maillot Adulto ↔ Criança). Usado para
+     * exibir o box "Également disponible" na página de detalhes — não é um
+     * seletor: apenas indica e liga para a outra versão.
+     */
+    public function getAgeSibling(int $eventId, string $productId): ?array
+    {
+        $siblingId = $this->productConfig[$productId]['age_sibling'] ?? null;
+        if (!$siblingId) {
+            return null;
         }
-        return null;
+        return $this->getProduct($eventId, $siblingId);
     }
 
     private function fetchSid(int $eventId): ?string
@@ -108,9 +123,10 @@ class LeBilletService
             $block = substr($html, $start, $end - $start);
             $clean = preg_replace('/\s+/', ' ', $block);
 
-            $name        = $this->extractName($clean);
-            $price       = $this->extractPrice($clean);
-            $variantText = $this->extractVariantLabel($clean);
+            $name  = $this->extractName($clean);
+            $price = $this->extractPrice($clean);
+            $spans = $this->extractVariantSpans($clean);
+            $dims  = $this->parseDimensions($spans, $variantId);
 
             if (!$name) {
                 continue;
@@ -130,20 +146,48 @@ class LeBilletService
                 'type'  => 'accessory',
             ];
 
+            if ($cfg['image'] === null) {
+                continue;
+            }
+
+            // Extrai stock desta variante a partir do select logo após o id="product_X_Y"
+            $selectStart = $offsets[$i][1];
+            $selectEnd   = isset($offsets[$i + 1]) ? $offsets[$i + 1][1] : $selectStart + 600;
+            $selectBlock = substr($html, $selectStart, $selectEnd - $selectStart);
+            $stock       = $this->extractMaxStock($selectBlock);
+
             if (!isset($products[$productId])) {
+                // Nome de exibição: apenas normaliza os espaços duplicados que o
+                // LeBillet às vezes devolve (ex.: "Le Maillot  Adulto").
+                $displayName = trim(preg_replace('/\s{2,}/', ' ', $name));
+
                 $products[$productId] = [
                     'id'       => $productId,
-                    'name'     => $name,
+                    'name'     => $displayName,
                     'price'    => $price,
                     'image'    => $cfg['image'],
+                    'images'   => $cfg['images'] ?? [],
                     'type'     => $cfg['type'],
+                    'color'    => $cfg['color'] ?? null,
+                    'hidden'   => (bool) ($cfg['hidden'] ?? false),
                     'variants' => [],
                 ];
             }
 
+            // Rótulo de fallback: combina as dimensões detectadas (ex.: "Enfant S"),
+            // ou cai no primeiro span limpo se nenhuma dimensão foi reconhecida.
+            $labelParts = array_filter([$dims['group'], $dims['size']]);
+            $label = $labelParts
+                ? implode(' ', $labelParts)
+                : ($this->cleanVariantLabel($spans[0] ?? null, $variantId) ?? '');
+
             $products[$productId]['variants'][] = [
                 'id'    => $variantId,
-                'label' => $this->cleanVariantLabel($variantText) ?? '',
+                'label' => $label,
+                'group' => $dims['group'],   // idade/género (Enfant, Adulte, Homme…) ou null
+                'size'  => $dims['size'],    // tamanho (S, M, L, XL…) ou null
+                'stock' => $stock,
+                'price' => $price,
             ];
         }
 
@@ -170,33 +214,122 @@ class LeBilletService
         return null;
     }
 
-    private function extractVariantLabel(string $block): ?string
+    private const SIZE_MAP = ['132' => 'S', '133' => 'M', '134' => 'L', '135' => 'XL'];
+
+    private const IGNORED_LABELS = ['feminino', 'masculino', 'fille', 'garçon', 'garcon'];
+
+    /** Palavras reconhecidas como dimensão de idade/género (grupo). */
+    private const GROUP_WORDS = [
+        'enfant', 'criança', 'crianca', 'kids', 'kid', 'child', 'children',
+        'adulte', 'adulto', 'adult',
+        'masculino', 'masculin', 'homme', 'men', 'man', 'male',
+        'feminino', 'feminin', 'féminin', 'femme', 'women', 'woman', 'female',
+        'fille', 'garçon', 'garcon', 'girl', 'boy', 'unisexe', 'unisex',
+    ];
+
+    /**
+     * Devolve todos os <span> relevantes de um bloco de variante (sem preços,
+     * sem "Lote/Lot N", já decodificados e normalizados).
+     *
+     * @return string[]
+     */
+    private function extractVariantSpans(string $block): array
     {
+        $spans = [];
         if (preg_match_all('/<span[^>]*>\s*([^<]+?)\s*<\/span>/i', $block, $m)) {
             foreach ($m[1] as $candidate) {
-                $candidate = trim(strip_tags($candidate));
-                if ($candidate === '' || preg_match('/^\s*$/', $candidate)) {
+                $candidate = html_entity_decode(trim(strip_tags($candidate)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $candidate = trim(preg_replace('/[\x{00A0}\s]+/u', ' ', $candidate));
+                if ($candidate === '' || str_starts_with($candidate, '€')) {
                     continue;
                 }
-                if (str_starts_with($candidate, '€')) {
+                if (preg_match('/^lote?\b/i', $candidate)) { // "Lote 1" / "Lot 1"
                     continue;
                 }
-                return $candidate;
+                $spans[] = $candidate;
             }
         }
-        return null;
+        return $spans;
     }
 
-    private function cleanVariantLabel(?string $raw): ?string
+    /**
+     * Extrai as duas dimensões de uma variante a partir dos seus spans:
+     *   - group: idade/género (Enfant, Adulte, Homme, Femme…) ou null
+     *   - size:  tamanho (S, M, L, XL…) ou null
+     *
+     * Aceita spans separados ("Enfant", "TAMANHO S") ou combinados num só
+     * ("Enfant - S"). Se o tamanho não vier no texto, tenta o SIZE_MAP por id.
+     *
+     * @param string[] $spans
+     * @return array{group: ?string, size: ?string}
+     */
+    private function parseDimensions(array $spans, string $variantId): array
+    {
+        $group = null;
+        $size  = null;
+
+        foreach ($spans as $span) {
+            // Remove apenas o rótulo do campo ("TAMANHO S" → "S"). O que sobra é
+            // o tamanho EXATAMENTE como vem do LeBillet, em qualquer formato
+            // ("S", "XXL", "3-4 ANS", "Unique"…). Não validamos nem normalizamos.
+            $clean = preg_replace('/\b(TAMANHO|TAILLE|SIZE|TALLA|TAGLIA)\b\s*/i', '', $span);
+            $clean = trim(preg_replace('/\s+/', ' ', $clean));
+            if ($clean === '') {
+                continue;
+            }
+
+            // Se o span for só uma palavra de género/idade, é o "grupo" (ex.: o
+            // "Feminino" redundante do Sale Gosse) — separamos para não virar
+            // tamanho. Caso contrário, é o tamanho, pego como veio.
+            if (in_array(mb_strtolower($clean), self::GROUP_WORDS, true)) {
+                if ($group === null) {
+                    $group = $clean;
+                }
+                continue;
+            }
+            if ($size === null) {
+                $size = $clean;
+            }
+        }
+
+        // Fallback de segurança quando a variante não traz texto de tamanho.
+        if ($size === null && isset(self::SIZE_MAP[$variantId])) {
+            $size = self::SIZE_MAP[$variantId];
+        }
+
+        return ['group' => $group, 'size' => $size];
+    }
+
+    private function cleanVariantLabel(?string $raw, string $variantId = ''): ?string
     {
         if ($raw === null || trim($raw) === '') {
-            return null;
+            return self::SIZE_MAP[$variantId] ?? null;
         }
         $label = trim($raw);
         $label = preg_replace('/^TAMANHO\s+/i', '', $label);
         $label = preg_replace('/^TAILLE\s+/i', '', $label);
         $label = preg_replace('/^SIZE\s+/i', '', $label);
-        return $label !== '' ? $label : null;
+        $label = trim($label);
+
+        $normalized = strtolower(trim(preg_replace('/[\x{00A0}\s]+/u', ' ', $label)));
+        if (in_array($normalized, self::IGNORED_LABELS, true)) {
+            return self::SIZE_MAP[$variantId] ?? null;
+        }
+
+        return $label !== '' ? $label : (self::SIZE_MAP[$variantId] ?? null);
+    }
+
+    /**
+     * Retorna a quantidade máxima disponível para uma variante,
+     * lendo as opções do <select> logo após o id="product_X_Y".
+     * Retorna 0 se esgotado, ou 10 como fallback.
+     */
+    private function extractMaxStock(string $block): int
+    {
+        if (preg_match_all('/<option value="(\d+)"/', $block, $m)) {
+            return max(array_map('intval', $m[1]));
+        }
+        return 10;
     }
 
     private function curlGet(string $url): ?string

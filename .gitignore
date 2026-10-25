@@ -2,3 +2,12 @@
 .env
 vendor/
 node_modules/
+app/Cache/
+
+# Backups locais de mídia original (não otimizada) — fora do site servido
+media-backup/
+
+# Ferramentas locais e artefatos de deploy
+.claude/
+DEPLOY-FTP*.txt
+YANNS-ftp-*.zip

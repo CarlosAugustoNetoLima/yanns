@@ -1,12 +1,9 @@
 <?php
 use App\Helpers\Component;
 use App\Helpers\I18n;
-
-// Generate unique ID for this instance if not provided
-$cartModalId = $id ?? uniqid('cart_modal_');
 ?>
 
-<div class="cart-modal-backdrop" id="<?= $cartModalId?>">
+<div class="cart-modal-backdrop yanns-cart-modal" id="yanns-cart-modal">
     <div class="cart-modal-container">
         <!-- Header -->
         <div class="cart-modal-header">

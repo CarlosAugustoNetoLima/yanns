@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: center;
     padding: 80px 40px;
-    gap: 24px;
+    gap: 32px;
     width: 100%;
     overflow: hidden;
 }
@@ -79,9 +79,9 @@
     align-content: center;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: 24px;
     width: 100%;
-    max-width: 1040px;
+    max-width: 1200px;
     /* 3 * 328px + 2 * 16px roughly, ensures centered layout matching figma */
 }
 

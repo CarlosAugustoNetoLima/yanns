@@ -53,6 +53,18 @@
     margin: 0;
 }
 
+.store-card-color {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-neutral-1100);
+    border: 1px solid var(--color-neutral-600);
+    border-radius: 999px;
+    padding: 2px 10px;
+    line-height: normal;
+}
+
 .store-card-price {
     font-family: 'Inter', sans-serif;
     font-size: 12px;

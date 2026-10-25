@@ -84,9 +84,13 @@
         padding: var(--spacing-40) var(--spacing-20);
     }
 
+    /* Título sempre acima dos vídeos no mobile */
     .videos-recents-row {
+        flex-direction: column;
+    }
+
+    .videos-vus-row {
         flex-direction: column-reverse;
-        /* Keep title above or below as needed */
     }
 
     .videos-title {

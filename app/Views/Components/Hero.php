@@ -6,8 +6,9 @@
 <section class="hero" aria-label="Hero Section">
     <div class="hero-video-container">
         <!-- Video will go here -->
-        <video id="heroVideo" autoplay loop playsinline muted class="hero-video">
-            <source src="assets/video/Yanns - Coco Choco.faststart.mp4" type="video/mp4">
+        <video id="heroVideo" autoplay loop playsinline muted preload="auto"
+               poster="assets/video/hero-poster.webp" class="hero-video">
+            <source src="assets/video/Yanns - Coco Choco.optimized.mp4" type="video/mp4">
         </video>
     </div>
 

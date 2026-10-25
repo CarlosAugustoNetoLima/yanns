@@ -357,14 +357,23 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .yanns-cart-modal {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: var(--spacing-16) 0;
+    }
+
     .cart-modal-container {
-        max-height: 100vh;
-        height: 100vh;
+        height: auto;
+        max-height: none;
+        display: flex;
+        flex-direction: column;
     }
 
     .cart-modal-body {
         flex-direction: column;
-        overflow-y: auto;
+        overflow: visible;
+        height: auto;
     }
 
     .cart-modal-products {
@@ -376,7 +385,6 @@
         width: 100%;
         border-left: none;
         border-top: 1px solid var(--color-neutral-1100);
-        padding-bottom: var(--spacing-80);
     }
 
     .cart-product-item {

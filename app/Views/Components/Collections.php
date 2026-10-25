@@ -9,7 +9,9 @@ use App\Helpers\I18n;
              data-msg-loading="<?= htmlspecialchars(I18n::t('collections.loading')) ?>"
              data-msg-error="<?= htmlspecialchars(I18n::t('collections.error')) ?>"
              data-msg-empty="<?= htmlspecialchars(I18n::t('collections.empty')) ?>"
-             data-msg-no-image="<?= htmlspecialchars(I18n::t('product.image_unavailable')) ?>">
+             data-msg-no-image="<?= htmlspecialchars(I18n::t('product.image_unavailable')) ?>"
+             data-color-blanc="<?= htmlspecialchars(I18n::t('product.color.blanc')) ?>"
+             data-color-noir="<?= htmlspecialchars(I18n::t('product.color.noir')) ?>">
             <div class="collections-loading"><?= htmlspecialchars(I18n::t('collections.loading')) ?></div>
         </div>
 

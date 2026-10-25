@@ -4,13 +4,14 @@
     align-items: center;
     border: 2px solid var(--color-neutral-300);
     box-sizing: border-box;
-    width: 328px;
-    height: 95px;
-    padding: 16px 24px;
+    width: 380px;
+    min-height: 115px;
+    height: auto;
+    padding: 16px 32px;
     position: relative;
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.7);
-    gap: 24px;
+    gap: 36px;
     transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     /* Ensure overlay doesn't spill out */
@@ -51,6 +52,17 @@
     opacity: 1;
 }
 
+/* Non-clickable states (no ticket link yet, or free entry) */
+.card-date.no-ticket {
+    cursor: default;
+}
+
+.card-date.free .card-date-hover-text {
+    color: var(--color-primary-300, #F2A6BB);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
 /* Base Content Wrapping */
 .card-date-left,
 .card-date-right {
@@ -80,24 +92,26 @@
 /* Day Name text */
 .card-date-day-name {
     font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    /* Regular */
-    color: var(--color-neutral-600);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-neutral-700);
     margin: 0;
     line-height: normal;
     flex-shrink: 0;
+    text-transform: uppercase;
 }
 
 /* Day Number (e.g., 14) */
 .card-date-day-number {
     font-family: 'Inter', sans-serif;
-    font-size: 40px;
-    font-weight: 700;
-    /* Bold */
+    font-size: 60px;
+    font-weight: 800;
+    /* Extra Bold */
     color: var(--color-neutral-1100);
     margin: 0;
-    line-height: 1;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
     /* Match design sizing better */
     flex-shrink: 0;
 }
@@ -137,19 +151,23 @@
 }
 
 .card-date-location {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     color: var(--color-neutral-1100);
     margin: 0;
-    line-height: normal;
+    line-height: 1.2;
     width: 100%;
     flex-shrink: 0;
 }
 
 .card-date-time-venue {
-    font-size: 12px;
-    color: var(--color-neutral-600);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-neutral-700);
     margin: 0;
-    line-height: normal;
+    line-height: 1.25;
     width: 100%;
     flex-shrink: 0;
 }

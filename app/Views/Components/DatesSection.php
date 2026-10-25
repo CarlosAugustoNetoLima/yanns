@@ -23,6 +23,8 @@ foreach ($events as $ev) {
     $dia  = $date->format('d'); // dia
     $ano  = $date->format('Y'); // ano
     $hora = $date->format('H:i'); // hora
+    $isFree = !empty($ev->isFree);
+    $timeTbd = !empty($ev->timeTbd);
 
     $placeInfo = $ev->place->name ? $ev->place->name . ', ' : '';
     array_push($dates, [
@@ -34,7 +36,10 @@ foreach ($events as $ev) {
         'dayName' => $mes . '.',
         'dayNumber' => $dia,
         'locationText' => $placeInfo . $ev->city->name . ', ' . $ev->country->name,
-        'timeAndVenue' => $diaSemana . ". " . $dia . " " . $mes . ". · " . $hora
+        'timeAndVenue' => $timeTbd
+            ? $diaSemana . ". " . $dia . " " . $mes . "."
+            : $diaSemana . ". " . $dia . " " . $mes . ". · " . $hora,
+        'isFree' => $isFree
     ]);
 }
 ?>

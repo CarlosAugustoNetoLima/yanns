@@ -9,7 +9,7 @@
                 <a href="/"><?= htmlspecialchars(I18n::t('nav.home')) ?></a>
                 <a href="/musique"><?= htmlspecialchars(I18n::t('nav.music')) ?></a>
                 <a href="/dates"><?= htmlspecialchars(I18n::t('nav.dates')) ?></a>
-                <a href="/collections"><?= htmlspecialchars(I18n::t('nav.collections')) ?></a>
+                <a href="https://yannsmusic.store/" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars(I18n::t('nav.collections')) ?></a>
                 <a href="/biographie"><?= htmlspecialchars(I18n::t('nav.bio')) ?></a>
             </nav>
         </div>

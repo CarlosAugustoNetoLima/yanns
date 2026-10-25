@@ -1,418 +1,234 @@
+/**
+ * Yanns Cart (badge)
+ * - localStorage ("yanns_cart_v1") guarda o que foi adicionado, para o badge
+ *   aparecer instantaneamente entre reloads (feedback otimista).
+ * - FONTE DA VERDADE = carrinho do LeBillet. A cada carga de página fazemos
+ *   reconcileBadge(): buscamos o cart/resume real (via proxy) e corrigimos o
+ *   badge — se o carrinho real estiver vazio, o badge zera mesmo que o
+ *   localStorage tenha resíduo.
+ * - Clicar no ícone abre o checkout do LeBillet (que mostra o cart resume).
+ */
 document.addEventListener('DOMContentLoaded', () => {
-    // Modal elements
-    const cartModalId = 'cart_modal_instance'; // Using a fixed ID for simplicity or expecting it in the DOM
-    const cartModal = document.querySelector('.cart-modal-backdrop');
+    const CART_VERSION = 1;
+    const CART_KEY = 'yanns_cart_v' + CART_VERSION;
+    const LEGACY_KEYS = ['yanns_cart_items'];
+    const PLACEHOLDER_VARIANT = 'lb_session';
 
-    // Close buttons
-    const closeBtns = document.querySelectorAll('[data-cart-close], .cart-modal-back');
+    LEGACY_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (_) {} });
 
-    if (!cartModal) return;
+    const getEventId = () => String(window.LEBILLET_EVENT_ID || '1816');
 
-    // Helper for formatting prices
-    const formatPrice = (price) => {
-        return '€ ' + price.toFixed(2).replace('.', ',');
-    };
-
-    // State Key
-    const CART_STORAGE_KEY = 'yanns_cart_items';
-
-    // Load Items List
-    let cartItems = [];
-    try {
-        const stored = localStorage.getItem(CART_STORAGE_KEY);
-        if (stored) {
-            cartItems = JSON.parse(stored);
-            if (!Array.isArray(cartItems)) cartItems = [];
+    const loadCart = () => {
+        try {
+            const raw = localStorage.getItem(CART_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(parsed)) return [];
+            return parsed.filter(it =>
+                it && typeof it.variantId === 'string' && it.variantId
+                && Number.isFinite(Number(it.qty)) && Number(it.qty) > 0
+            );
+        } catch (_) {
+            return [];
         }
-    } catch (e) {
-        cartItems = [];
-    }
-
-    // Save Items List
-    const saveCart = () => {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
     };
 
-    // Helper to get total qty
-    const getTotalQty = () => {
-        return cartItems.reduce((sum, item) => sum + item.qty, 0);
+    const saveCart = (items) => {
+        localStorage.setItem(CART_KEY, JSON.stringify(items));
     };
 
-    // Helper to get total price
-    const getSubtotal = () => {
-        return cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    };
+    const totalQty = () => loadCart().reduce((s, it) => s + (Number(it.qty) || 0), 0);
 
-    // Update the cart badges in the header and mobile menu
-    const updateCartBadges = () => {
-        const qty = getTotalQty();
-        const badges = document.querySelectorAll('.cart-badge');
-        badges.forEach(badge => {
-            if (qty > 0) {
-                badge.textContent = qty;
-                badge.classList.remove('hidden');
-            } else {
-                badge.textContent = '0';
-                badge.classList.add('hidden');
-            }
+    const updateBadge = () => {
+        const qty = totalQty();
+        document.querySelectorAll('.cart-badge').forEach(b => {
+            b.textContent = String(qty);
+            b.classList.toggle('hidden', qty === 0);
         });
-
-        // Sync main page quantity if it exists (ensuring it never reaches 0 on the product page)
-        const pageQtyDisplay = document.getElementById('qty-value');
-        if (pageQtyDisplay) {
-            pageQtyDisplay.textContent = Math.max(1, qty === 0 ? 1 : parseInt(pageQtyDisplay.textContent) || 1);
-        }
     };
 
-    // A function to handle updates inside the modal
-    const renderCart = () => {
-        const itemsContainer = document.getElementById('cart-items-container');
-        const summaryList = document.getElementById('cart-summary-list');
-        const feesContainer = cartModal.querySelector('.cart-summary-fees');
-        const checkoutBtn = cartModal.querySelector('.cart-checkout-btn');
-        const promoContainer = cartModal.querySelector('.cart-promo-container');
-        const cartTotalPriceDisplay = cartModal.querySelector('#cart-total-price');
-        const feeDisplay = cartModal.querySelector('.fee-price');
-
-        // Remove old empty message if any
-        let emptyMsg = cartModal.querySelector('.cart-empty-message');
-        if (emptyMsg) emptyMsg.remove();
-
-        if (!itemsContainer || !summaryList) return;
-
-        itemsContainer.innerHTML = '';
-        summaryList.innerHTML = '';
-
-        const totalQty = getTotalQty();
-
-        if (totalQty === 0) {
-            // Empty State
-            if (feesContainer) feesContainer.style.display = 'none';
-            if (checkoutBtn) checkoutBtn.style.display = 'none';
-            if (promoContainer) promoContainer.style.display = 'none';
-            if (cartTotalPriceDisplay) cartTotalPriceDisplay.textContent = formatPrice(0);
-            if (feeDisplay) feeDisplay.textContent = formatPrice(0);
-
-            // Reset external product page states
-            const activeSizeButtons = document.querySelectorAll('.size-button.active');
-            activeSizeButtons.forEach(btn => btn.classList.remove('active'));
-
-            emptyMsg = document.createElement('div');
-            emptyMsg.className = 'cart-empty-message';
-            emptyMsg.style.padding = '24px 0';
-            emptyMsg.style.display = 'flex';
-            emptyMsg.style.flexDirection = 'column';
-            emptyMsg.style.alignItems = 'flex-start';
-            emptyMsg.style.gap = '24px';
-
-            const emptyText = document.createElement('div');
-            emptyText.textContent = 'Votre panier est vide.';
-            emptyText.style.fontFamily = "'Inter', sans-serif";
-            emptyText.style.fontSize = '16px';
-
-            const keepShoppingBtn = document.createElement('a');
-            keepShoppingBtn.href = '/collections';
-            keepShoppingBtn.textContent = 'Continuer les achats';
-            keepShoppingBtn.className = 'btn btn-style-solid btn-variant-primary btn-size-medium';
-            keepShoppingBtn.style.alignSelf = 'stretch';
-            keepShoppingBtn.style.marginTop = '16px';
-            keepShoppingBtn.addEventListener('click', (e) => {
-                if (window.location.pathname.includes('/collections')) {
-                    e.preventDefault();
-                    closeCartModal();
-                }
-            });
-
-            emptyMsg.appendChild(emptyText);
-            emptyMsg.appendChild(keepShoppingBtn);
-            itemsContainer.appendChild(emptyMsg);
-
-            // Placeholder Summary
-            const placeholderSummary = document.createElement('div');
-            placeholderSummary.className = 'cart-summary-items';
-            placeholderSummary.style.display = 'flex';
-            placeholderSummary.innerHTML = `
-                <div class="cart-summary-item-desc">
-                    <span class="desc-text">Aucun article sélectionné</span>
-                    <span class="desc-price">${formatPrice(0)}</span>
-                </div>
-            `;
-            summaryList.appendChild(placeholderSummary);
-        } else {
-            // Populated State
-            if (feesContainer) feesContainer.style.display = 'flex';
-            if (checkoutBtn) checkoutBtn.style.display = 'inline-flex';
-            if (promoContainer) promoContainer.style.display = 'block';
-
-            const tax = 2.05; // fixed mock tax for now
-            const subtotal = getSubtotal();
-            const finalTotal = subtotal + tax;
-
-            if (cartTotalPriceDisplay) cartTotalPriceDisplay.textContent = formatPrice(finalTotal);
-            if (feeDisplay) feeDisplay.textContent = formatPrice(tax);
-
-            // Render Each Item
-            cartItems.forEach((item, index) => {
-                // Main Product List Item
-                const productEl = document.createElement('div');
-                productEl.className = 'cart-product-item';
-                productEl.style.display = 'flex';
-                productEl.innerHTML = `
-                    <div class="cart-product-image">
-                        <img src="/assets/img/collections/${item.image}" alt="${item.name}">
-                    </div>
-                    <div class="cart-product-info">
-                        <h3 class="cart-product-title">${item.name} 
-                            ${item.size ? `<span class="cart-product-size-label" style="font-weight: 400; font-size: 14px; color: var(--color-neutral-600); text-transform: none; display:block; margin-top:4px;">Taille: ${item.size}</span>` : ''}
-                        </h3>
-                        <p class="cart-product-price">${formatPrice(item.price)}</p>
-                    </div>
-                    <div class="cart-product-quantity">
-                        <div class="quantity-controls">
-                            <button class="btn btn-style-outline btn-variant-primary btn-size-small btn-icon cart-qty-minus" data-idx="${index}" aria-label="Decrease quantity">
-                                ${'<img src="/assets/img/icons/minus.svg" alt="Minus">'}
-                            </button>
-                            <span class="cart-qty-value">${item.qty}</span>
-                            <button class="btn btn-style-outline btn-variant-primary btn-size-small btn-icon cart-qty-plus" data-idx="${index}" aria-label="Increase quantity">
-                                ${'<img src="/assets/img/icons/plus.svg" alt="Plus">'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-                itemsContainer.appendChild(productEl);
-
-                // Summary List Item
-                const summaryEl = document.createElement('div');
-                summaryEl.className = 'cart-summary-items';
-                summaryEl.style.display = 'flex';
-                summaryEl.innerHTML = `
-                    <div class="cart-summary-item-desc">
-                        <span class="desc-text">${item.qty}x ${item.name} ${item.size ? `(Noir / ${item.size})` : ''}</span>
-                        <span class="desc-price">${formatPrice(item.price * item.qty)}</span>
-                    </div>
-                    <div class="cart-summary-item-remove">
-                        <button class="remove-btn" data-idx="${index}">Effacer</button>
-                    </div>
-                `;
-                summaryList.appendChild(summaryEl);
-            });
-
-            // Attach dynamic events for the new buttons
-            itemsContainer.querySelectorAll('.cart-qty-plus').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const idx = parseInt(btn.getAttribute('data-idx'));
-                    cartItems[idx].qty++;
-                    saveCart();
-                    renderCart();
-                    updateCartBadges();
-                });
-            });
-
-            itemsContainer.querySelectorAll('.cart-qty-minus').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const idx = parseInt(btn.getAttribute('data-idx'));
-                    if (cartItems[idx].qty > 1) {
-                        cartItems[idx].qty--;
-                    } else {
-                        cartItems.splice(idx, 1);
-                    }
-                    saveCart();
-                    renderCart();
-                    updateCartBadges();
-                });
-            });
-
-            summaryList.querySelectorAll('.remove-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const idx = parseInt(btn.getAttribute('data-idx'));
-                    cartItems.splice(idx, 1);
-                    saveCart();
-                    renderCart();
-                    updateCartBadges();
-                });
-            });
-        }
+    const clearCart = () => {
+        try { localStorage.removeItem(CART_KEY); } catch (_) {}
+        updateBadge();
     };
 
-    // To open
-    const openCartModal = (e, isAdding = false) => {
-        if (e) e.preventDefault();
+    /**
+     * Define a contagem autoritativa (vinda do carrinho real do LeBillet).
+     * Se n <= 0, limpa. Caso contrário, garante que o badge reflita n —
+     * substituindo por um placeholder quando não temos os itens detalhados.
+     */
+    const setAuthoritativeCount = (n) => {
+        if (!Number.isFinite(n)) return;
+        if (n <= 0) { clearCart(); return; }
+        const items = loadCart();
+        const current = items.reduce((s, it) => s + (Number(it.qty) || 0), 0);
+        if (current !== n) {
+            saveCart([{ id: '', variantId: PLACEHOLDER_VARIANT, eventId: getEventId(), qty: n }]);
+        }
+        updateBadge();
+    };
 
-        if (isAdding) {
-            // Explicitly adding item from product page
-            let selectedSizeText = '';
-            const sizeButtons = document.querySelectorAll('.size-button');
-            if (sizeButtons.length > 0) {
-                const selectedSize = document.querySelector('.size-button.active');
-                if (selectedSize) {
-                    selectedSizeText = selectedSize.textContent.trim();
-                }
+    /**
+     * Conta os itens do HTML do cart/resume do LeBillet.
+     * Replica a lógica do checkout.js (tbody tr, excluindo linhas td.pt-1),
+     * mas somando a quantidade do prefixo "Nx" de cada linha.
+     */
+    const parseCartCount = (html) => {
+        if (typeof html !== 'string' || !html) return 0;
+        // Marcadores de carrinho vazio (PT/FR/EN)
+        if (/Não adicionou nenhum item|n['’]avez ajouté aucun|aucun article|no items|empty cart/i.test(html)) {
+            return 0;
+        }
+        let doc;
+        try {
+            doc = new DOMParser().parseFromString(html, 'text/html');
+        } catch (_) {
+            return null; // não conseguimos parsear → não mexe no badge
+        }
+        const table = doc.querySelector('table.table-cart-resume');
+        if (!table) return 0;
+        let total = 0;
+        table.querySelectorAll('tbody tr').forEach(tr => {
+            if (tr.querySelector('td.pt-1')) return; // linhas de total/taxas
+            const cell = tr.querySelector('td');
+            if (!cell) return;
+            const m = cell.textContent.trim().match(/^(\d+)\s*x/i);
+            total += m ? parseInt(m[1], 10) : 1;
+        });
+        return total;
+    };
+
+    /**
+     * Reconcilia o badge com o carrinho REAL do LeBillet.
+     * Fonte única da verdade: busca o cart/resume e conta os itens.
+     * Usado na carga da página e sempre que o carrinho muda no iframe.
+     */
+    const reconcileBadge = () => {
+        const eventId = getEventId();
+        const url = '/checkout-proxy.php?event_id=' + encodeURIComponent(eventId)
+            + '&relay=1&path=' + encodeURIComponent(eventId + '/cart/resume');
+        return fetch(url, {
+            credentials: 'same-origin',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+            .then(r => r.ok ? r.text() : '')
+            .then(html => {
+                if (!html) return;
+                const n = parseCartCount(html);
+                if (n === null) return; // parse falhou → mantém o que tem
+                setAuthoritativeCount(n);
+            })
+            .catch(() => { /* offline / erro de rede → mantém badge otimista */ });
+    };
+
+    // Debounce para evitar múltiplos fetches em rajada (cliques seguidos no iframe)
+    let _reconcileTimer = null;
+    const reconcileBadgeDebounced = () => {
+        if (_reconcileTimer) clearTimeout(_reconcileTimer);
+        _reconcileTimer = setTimeout(reconcileBadge, 200);
+    };
+
+    // Reconciliações escalonadas após um add: o modal adiciona o item ao carrinho
+    // do LeBillet de forma ASSÍNCRONA (carrega o iframe e só então aplica a qty).
+    // Re-buscamos o cart/resume em alguns intervalos para o badge convergir com o
+    // carrinho REAL, mesmo sem o utilizador interagir com o modal.
+    const reconcileAfterAdd = () => {
+        [800, 2000, 4000].forEach(ms => setTimeout(reconcileBadge, ms));
+    };
+
+    // ---- Public API ----
+    window.yannsCart = {
+        add: (item) => {
+            if (!item || !item.variantId) return;
+            const addQty = Number(item.qty) || 1;
+            const all = loadCart();
+
+            // Estado pós-reconcile: o carrinho está representado por um placeholder
+            // agregado (sem detalhe por variante). Descartá-lo faria o badge cair
+            // abaixo do real. Em vez disso, somamos a quantidade ao total atual para
+            // feedback instantâneo; o reconcileAfterAdd acerta com o carrinho real.
+            if (all.some(i => i.variantId === PLACEHOLDER_VARIANT)) {
+                const currentTotal = all.reduce((s, i) => s + (Number(i.qty) || 0), 0);
+                saveCart([{ id: '', variantId: PLACEHOLDER_VARIANT, eventId: getEventId(), qty: currentTotal + addQty }]);
+                updateBadge();
+                reconcileAfterAdd();
+                return;
             }
 
-            const productQtyDisplay = document.getElementById('qty-value');
-            const productQty = productQtyDisplay ? (parseInt(productQtyDisplay.textContent) || 1) : 1;
-
-            // Mock Product Data extraction (can be customized later to pull from DOM dataset attributes instead)
-            const productNameEl = document.querySelector('.product-title');
-            const productTitle = productNameEl ? productNameEl.textContent.trim() : 'CELLE/CELUI - T-SHIRT';
-
-            const productPriceStr = document.querySelector('.product-price')?.textContent.replace(/[^0-9,]/g, '').replace(',', '.') || '24.90';
-            const productPrice = parseFloat(productPriceStr);
-
-            const itemId = productTitle.replace(/\s+/g, '-').toLowerCase();
-
-            // Find existing matching item
-            const existingIndex = cartItems.findIndex(item => item.id === itemId && item.size === selectedSizeText);
-
-            // Extract the current image shown on the page (usually the selected color/variant)
-            let productImageSrc = 'casquette-black.png'; // default fallback
-            const mainSliderImage = document.querySelector('.main-slider .swiper-slide-active img');
-            if (mainSliderImage) {
-                // Try to grab just the filename, assuming images are in /assets/img/collections/
-                const srcParts = mainSliderImage.src.split('/');
-                productImageSrc = srcParts[srcParts.length - 1];
+            // Estado detalhado (antes de qualquer reconcile): merge por variante.
+            const items = all;
+            const idx = items.findIndex(i => i.variantId === item.variantId);
+            // Stock máximo do variante (0 = desconhecido/sem limite).
+            const stock = Number(item.stock) || 0;
+            const cap = (q) => (stock > 0 ? Math.min(q, stock) : q);
+            if (idx !== -1) {
+                // Não deixa o total ultrapassar o stock (cap autoritativo).
+                items[idx].qty = cap((Number(items[idx].qty) || 0) + addQty);
+                if (stock > 0) items[idx].stock = stock;
             } else {
-                const firstProductImage = document.querySelector('.product-details-main-image img'); // fallback if no swiper active
-                if (firstProductImage) {
-                    const srcParts = firstProductImage.src.split('/');
-                    productImageSrc = srcParts[srcParts.length - 1];
-                }
-            }
-
-
-            if (existingIndex !== -1) {
-                cartItems[existingIndex].qty += productQty;
-                cartItems[existingIndex].image = productImageSrc; // update image if variant changed
-            } else {
-                cartItems.push({
-                    id: itemId,
-                    name: productTitle,
-                    size: selectedSizeText,
-                    price: productPrice,
-                    qty: productQty,
-                    image: productImageSrc
+                items.push({
+                    id:        String(item.id || ''),
+                    variantId: String(item.variantId),
+                    eventId:   String(item.eventId || getEventId()),
+                    qty:       cap(addQty),
+                    stock:     stock,
                 });
             }
-
-            saveCart();
-        }
-
-        renderCart();
-        updateCartBadges();
-
-        cartModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+            saveCart(items);
+            updateBadge();
+            reconcileAfterAdd();
+        },
+        clear: clearCart,
+        count: totalQty,
+        items: loadCart,
+        reconcile: reconcileBadge,
     };
 
-    // To close
-    const closeCartModal = (e) => {
-        if (e) e.preventDefault();
-        cartModal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
-    };
-
-    // Use event delegation for Add to Cart button since its disabled state might change dynamically
+    // ---- Cart icon (header) → abre checkout LeBillet ou redireciona ----
     document.body.addEventListener('click', (e) => {
-        // If it's the Add to Cart button (id=btn-add-cart) or a child of it
-        const addCartBtn = e.target.closest('#btn-add-cart');
-        if (addCartBtn) {
-            // Check if sizes exist and one is selected
-            const sizeButtons = document.querySelectorAll('.size-button');
-            if (sizeButtons.length > 0) {
-                const selectedSize = document.querySelector('.size-button.active');
-                if (!selectedSize) {
-                    e.preventDefault();
-                    // Alert the user using Toastify styled to match the site
-                    Toastify({
-                        text: "Veuillez choisir une taille avant d'ajouter au panier.",
-                        duration: 3000,
-                        gravity: "top", // top or bottom
-                        position: "center", // left, center or right
-                        stopOnFocus: true, // Prevents dismissing of toast on hover
-                        style: {
-                            background: "var(--color-neutral-1100)",
-                            color: "var(--color-neutral-100)",
-                            fontFamily: "'Inter', sans-serif",
-                            fontWeight: "700",
-                            borderRadius: "4px",
-                            padding: "12px 24px",
-                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-                        }
-                    }).showToast();
-                    return; // Stop here, do not add to cart
-                }
-            }
-
-            // Get qty from input
-            const productQtyDisplay = document.getElementById('qty-value');
-            const productQty = productQtyDisplay ? (parseInt(productQtyDisplay.textContent) || 1) : 1;
-            updateCartBadges(productQty);
-            openCartModal(e, true);
+        const trigger = e.target.closest('[data-cart-open]');
+        if (!trigger) return;
+        e.preventDefault();
+        const items = loadCart();
+        if (!items.length) {
+            window.location.href = '/collections';
+            return;
         }
-
-        // Handle cart icon from header properly based on data attribute
-        const cartIcon = e.target.closest('[data-cart-open]');
-        if (cartIcon && !addCartBtn) {
-            openCartModal(e, false);
+        if (typeof window.openCustomModal === 'function') {
+            const first = items[0];
+            // Abre no "modo carrinho": a lista mostra APENAS os itens já adicionados
+            // (qty > 0), não o catálogo inteiro nem só o primeiro item.
+            window.openCustomModal(
+                'Panier',
+                first.eventId || getEventId(),
+                '__CART__',
+                0
+            );
+        } else {
+            window.location.href = '/collections';
         }
     });
 
-    // Attach close events
-    closeBtns.forEach(btn => {
-        btn.addEventListener('click', closeCartModal);
-    });
-
-    // Close on backdrop click (if clicking outside the container)
-    cartModal.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-            closeCartModal();
-        }
-    });
-
-    // Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && cartModal.classList.contains('active')) {
-            closeCartModal();
-        }
-    });
-
-    // Promo Code Toggle
-    const promoBtn = cartModal.querySelector('.cart-promo-btn');
-    const promoInputWrapper = document.getElementById('cart-promo-input-wrapper');
-
-    if (promoBtn && promoInputWrapper) {
-        promoBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            promoBtn.classList.add('hidden');
-            promoInputWrapper.classList.remove('hidden');
-
-            const inputField = promoInputWrapper.querySelector('.input-field');
-            if (inputField) {
-                inputField.focus();
-            }
-        });
-
-        // Optional: Revert to button if input loses focus and is empty
-        const inputField = promoInputWrapper.querySelector('.input-field');
-        if (inputField) {
-            inputField.addEventListener('blur', () => {
-                if (!inputField.value.trim()) {
-                    promoInputWrapper.classList.add('hidden');
-                    promoBtn.classList.remove('hidden');
-                }
-            });
-        }
-    }
-
-    // --- On Load Restore ---
-    const restoreCartState = () => {
-        // Hydration logic is already handled at the top when reading into cartItems array
-        renderCart();
-        updateCartBadges();
+    // ---- Sync vindo do iframe LeBillet (postMessage) ----
+    // O número reportado pelo iframe NÃO é confiável (conta seletores do painel
+    // de produtos, não só o carrinho). Por isso tratamos a mensagem apenas como
+    // GATILHO: re-buscamos o cart/resume real para obter a contagem autoritativa.
+    window.onYannsCartCount = function (_count) {
+        // Avisa a página (ex.: seletor de quantidade dos detalhes do produto) que
+        // o carrinho mudou, para refletir a quantidade escolhida no checkout.
+        window.dispatchEvent(new CustomEvent('yanns:cartchanged'));
     };
 
-    restoreCartState();
+    // Qualquer mudança no carrinho (alteração no modal ou fecho do modal) reconcilia
+    // o badge com o carrinho REAL do LeBillet — mantém badge, detalhes e checkout
+    // sempre coerentes.
+    window.addEventListener('yanns:cartchanged', reconcileBadgeDebounced);
+
+    // Badge instantâneo (otimista) + reconciliação com o carrinho real
+    updateBadge();
+    reconcileBadge();
+
+    // Revalida quando a aba volta ao foco (carrinho pode ter mudado/expirado)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) reconcileBadge();
+    });
 });

@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\Component;
+use App\Helpers\I18n;
 
 // --- Default Props ---
 $date = $date ?? '14 MARS';
@@ -10,21 +11,27 @@ $variant = $variant ?? 'gray';
 $idEvent = $idEvent ?? '1';
 $event = $event ?? '';
 $checkoutUrl = $checkoutUrl ?? 'https://checkout.lebillet.eu/';
-$ticketUrl = $ticketUrl ?? null;
+$ticketUrl = $ticketUrl ?? '';
 $fullTime = $fullTime ?? '14 Mars - Samedi 21h00';
 $locationDetails = $locationDetails ?? "L'Usine, Istres, FRA";
 $doorsOpen = $doorsOpen ?? 'Ouverture des portes: 19h';
 $statusText = $statusText ?? 'Dernières places';
+$isFree = $isFree ?? false;
 
+$hasTicket = !empty($ticketUrl);
 $fillColor = ($variant === 'gray') ? 'var(--color-neutral-500)' : 'var(--color-primary-300)';
 
-$buttonComponent = Component::render('Button', [
+$buttonLabel = $hasTicket ? 'RÉSERVER MON BILLET' : 'BIENTÔT DISPONIBLE';
+$buttonState = $hasTicket ? 'default' : 'disabled';
+
+$buttonComponent = $isFree ? '' : Component::render('Button', [
     'idEvent' => $idEvent,
     'event' => $event,
     'variant' => 'Primary', // Or any custom variant that uses Neutral-1100 bg
     'style' => 'Solid',
     'size' => 'Large',
-    'label' => 'RÉSERVER MON BILLET',
+    'label' => $buttonLabel,
+    'state' => $buttonState,
     'class' => 'card-calendar-btn', // In case it needs strict overrides
     'checkoutUrl' => $checkoutUrl,
     'ticketUrl' => $ticketUrl
@@ -68,12 +75,20 @@ $buttonComponent = Component::render('Button', [
             </p>
         </div>
 
+        <?php if ($isFree): ?>
+        <div class="card-calendar-button-wrap">
+            <span class="card-calendar-free-badge"><?= htmlspecialchars(I18n::t('dates.free')) ?></span>
+        </div>
+        <?php else: ?>
         <div class="card-calendar-button-wrap">
             <?= $buttonComponent ?>
         </div>
 
+        <?php if ($hasTicket): ?>
         <p class="card-calendar-status">
             <?= htmlspecialchars($statusText) ?>
         </p>
+        <?php endif; ?>
+        <?php endif; ?>
     </div>
 </div>

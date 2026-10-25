@@ -12,27 +12,14 @@ $platforms = [
     ['service' => 'amazon',  'url' => 'https://music.amazon.com.br/artists/B01IPN06AW/yanns'],
 ];
 
-// Featured: último clip oficial (Mytho)
-$featured = [
-    'videoId'     => '8fxLKm-mgb4',
-    'title'       => 'YANNS - MYTHO (Clip officiel)',
-    'views_count' => 578_000,
-    'time_value'  => 1,
-    'time_unit'   => 'month',
-    'imageUrl'    => 'https://img.youtube.com/vi/8fxLKm-mgb4/sddefault.jpg',
-];
+// Vídeos carregados dinamicamente via YouTube Data API v3
+$ytService = new \App\Services\YouTubeService();
 
-// Catálogo de clipes oficiais (8) — ordenado por views descendente
-$clips = [
-    ['videoId' => 'MmQa-lLy38o', 'title' => 'Yanns - Clic clic pan pan (Clip Officiel)',  'views_count' => 176_365_394, 'time_value' => 4, 'time_unit' => 'year',  'imageUrl' => 'https://img.youtube.com/vi/MmQa-lLy38o/maxresdefault.jpg'],
-    ['videoId' => 'OUhlSwULEBE', 'title' => "Yanns - Mains en L'air (Clip Officiel)",     'views_count' => 32_458_131,  'time_value' => 3, 'time_unit' => 'year',  'imageUrl' => 'https://img.youtube.com/vi/OUhlSwULEBE/maxresdefault.jpg'],
-    ['videoId' => 'LzEwOWyvW68', 'title' => 'Yanns - En détresse (Clip Officiel)',        'views_count' => 29_757_941,  'time_value' => 4, 'time_unit' => 'year',  'imageUrl' => 'https://img.youtube.com/vi/LzEwOWyvW68/maxresdefault.jpg'],
-    ['videoId' => 'E6rYfBcVxUw', 'title' => 'Yanns - Soleil et nanas (Clip Officiel)',    'views_count' => 26_385_648,  'time_value' => 3, 'time_unit' => 'year',  'imageUrl' => 'https://img.youtube.com/vi/E6rYfBcVxUw/maxresdefault.jpg'],
-    ['videoId' => 'WRRVi5aNzQk', 'title' => "YANNS - JE T'AIME (clip officiel)",          'views_count' => 5_030_466,   'time_value' => 2, 'time_unit' => 'year',  'imageUrl' => 'https://img.youtube.com/vi/WRRVi5aNzQk/maxresdefault.jpg'],
-    ['videoId' => 'mwoHkRVOu7g', 'title' => 'YANNS - TOKÉ TOKÉ (Clip officiel)',          'views_count' => 1_667_370,   'time_value' => 2, 'time_unit' => 'month', 'imageUrl' => 'https://img.youtube.com/vi/mwoHkRVOu7g/maxresdefault.jpg'],
-    ['videoId' => '988rwXMSPic', 'title' => 'YANNS - COCO CHOCO (Clip officiel)',         'views_count' => 986_394,     'time_value' => 5, 'time_unit' => 'month', 'imageUrl' => 'https://img.youtube.com/vi/988rwXMSPic/maxresdefault.jpg'],
-    ['videoId' => '8fxLKm-mgb4', 'title' => 'YANNS - MYTHO (Clip officiel)',              'views_count' => 578_021,     'time_value' => 1, 'time_unit' => 'month', 'imageUrl' => 'https://img.youtube.com/vi/8fxLKm-mgb4/sddefault.jpg'],
-];
+// Featured: último clip oficial
+$featured = $ytService->getLatestClip();
+
+// Catálogo de clipes oficiais — ordenado por views descendente
+$clips = $ytService->getAllClips(8);
 
 // Helper: meta localizada para CardYoutube
 $buildMeta = function (array $v): string {

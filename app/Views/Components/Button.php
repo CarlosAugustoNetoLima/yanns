@@ -36,7 +36,7 @@ $isDisabled = ($state === 'disabled' || (isset($disabled) && $disabled));
         endif; ?>
     </button>
 <?php } else { ?>
-    <a href="<?= $url; ?>" <?= isset($id) ? 'id="' . htmlspecialchars($id) . '"' : '' ?>     <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : '' ?> class="
+    <a href="<?= $url; ?>" <?= isset($id) ? 'id="' . htmlspecialchars($id) . '"' : '' ?>     <?= isset($ariaLabel) ? 'aria-label="' . htmlspecialchars($ariaLabel) . '"' : '' ?>     <?= isset($target) ? 'target="' . htmlspecialchars($target) . '" rel="noopener noreferrer"' : '' ?> class="
     <?= implode(' ', array_filter($classes)) ?>" <?= $isDisabled ? 'disabled' : '' ?>>
         <?php if ($icon && method_exists('\App\Helpers\IconHelper', $icon)): ?>
             <?= \App\Helpers\IconHelper::$icon(24, 'currentColor') ?>
