@@ -9,5 +9,7 @@ media-backup/
 
 # Ferramentas locais e artefatos de deploy
 .claude/
+.vercel/
+dist/
 DEPLOY-FTP*.txt
 YANNS-ftp-*.zip

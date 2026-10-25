@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "rm -rf dist && mkdir -p dist && cp -R public/assets dist/assets && cp public/favicon.ico dist/favicon.ico",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/*.php": {
+      "runtime": "vercel-php@0.9.0",
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    { "source": "/checkout-proxy.php", "destination": "/api/checkout-proxy.php" },
+    { "source": "/styleguide.php", "destination": "/api/styleguide.php" },
+    { "source": "/index.php", "destination": "/api/index.php" },
+    { "source": "/(.*)", "destination": "/api/index.php" }
+  ]
+}

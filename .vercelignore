@@ -1,0 +1,18 @@
+.git
+.vercel
+.claude
+dist
+
+# Pacotes/manuais de deploy
+YANNS-ftp-*.zip
+DEPLOY-FTP*.txt
+
+# Ficheiros de desenvolvimento que não são usados em runtime
+serve
+README.md
+app/Helpers/*.bak
+app/Helpers/*.tmp
+app/Helpers/new_icons_final.php
+app/Helpers/temp_fix_play.php
+media-backup
+.DS_Store

@@ -28,7 +28,12 @@ class YouTubeService
         $this->cacheTtl   = $config['cache_ttl'] ?? 21600;
         $this->maxResults = $config['max_results'] ?? 8;
 
-        $this->cacheDir = __DIR__ . '/../../app/Cache/';
+        // Em ambiente serverless (Vercel) o código é read-only; usamos /tmp.
+        $cacheDir = __DIR__ . '/../../app/Cache/';
+        if (getenv('VERCEL') || !is_dir($cacheDir) || !is_writable($cacheDir)) {
+            $cacheDir = rtrim(sys_get_temp_dir(), '/') . '/yanns_youtube_cache/';
+        }
+        $this->cacheDir = $cacheDir;
         if (!is_dir($this->cacheDir)) {
             @mkdir($this->cacheDir, 0755, true);
         }
