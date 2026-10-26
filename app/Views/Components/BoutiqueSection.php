@@ -43,7 +43,7 @@ $collections = [
     [
         'key'       => 'coco',
         'label'     => 'COCO CHOCO',
-        'productUrl' => 'https://yannsmusic.store/products/t-shirt-coco-choco',
+        'productUrl' => '/produto?id=10947',
         'slides'    => [
             '/assets/img/collections/choco coco/1.webp',
             '/assets/img/collections/choco coco/2.webp',
@@ -59,7 +59,7 @@ $collections = [
     [
         'key'       => 'toke',
         'label'     => 'TOKÉ TOKÉ',
-        'productUrl' => 'https://yannsmusic.store/products/t-shirt-toke-toke',
+        'productUrl' => '/produto?id=10950',
         'slides'    => [
             '/assets/img/collections/toke toke/NZR_3449.webp',
             '/assets/img/collections/toke toke/NZR_3470.webp',
@@ -91,8 +91,7 @@ $collections = [
                     'variant' => 'primary',
                     'style' => 'solid',
                     'size' => 'extra-large',
-                    'url' => 'https://yannsmusic.store/',
-                    'target' => '_blank',
+                    'url' => '/collections',
                 ])?>
             </div>
         </div>
@@ -166,8 +165,6 @@ $collections = [
                                 >
                                 <a href="<?= htmlspecialchars($col['productUrl']) ?>"
                                    class="boutique-carousel-fg-link"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
                                    aria-label="Voir le produit">
                                     <img
                                         src="<?= htmlspecialchars($src) ?>"

@@ -14,7 +14,7 @@ $languages = [
     <a href="/" class="mobile-menu-item <?= $activePage === 'home' ? 'active' : ''?>"><?= htmlspecialchars(I18n::t('nav.home')) ?></a>
     <a href="/musique" class="mobile-menu-item <?= $activePage === 'musique' ? 'active' : ''?>"><?= htmlspecialchars(I18n::t('nav.music')) ?></a>
     <a href="/dates" class="mobile-menu-item <?= $activePage === 'dates' ? 'active' : ''?>"><?= htmlspecialchars(I18n::t('nav.dates')) ?></a>
-    <a href="https://yannsmusic.store/" target="_blank" rel="noopener noreferrer" class="mobile-menu-item"><?= htmlspecialchars(I18n::t('nav.collections')) ?></a>
+    <a href="/collections" class="mobile-menu-item <?= $activePage === 'collections' ? 'active' : ''?>"><?= htmlspecialchars(I18n::t('nav.collections')) ?></a>
     <a href="/biographie" class="mobile-menu-item <?= $activePage === 'biographie' ? 'active' : ''?>"><?= htmlspecialchars(I18n::t('nav.bio')) ?></a>
 
     <!-- Language switcher (mobile) -->
