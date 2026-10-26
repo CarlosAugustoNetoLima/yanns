@@ -43,7 +43,7 @@ $collections = [
     [
         'key'       => 'coco',
         'label'     => 'COCO CHOCO',
-        'productUrl' => '/produto?id=10947',
+        'productUrl' => '/collections',
         'slides'    => [
             '/assets/img/collections/choco coco/1.webp',
             '/assets/img/collections/choco coco/2.webp',
@@ -59,7 +59,7 @@ $collections = [
     [
         'key'       => 'toke',
         'label'     => 'TOKÉ TOKÉ',
-        'productUrl' => '/produto?id=10950',
+        'productUrl' => '/collections',
         'slides'    => [
             '/assets/img/collections/toke toke/NZR_3449.webp',
             '/assets/img/collections/toke toke/NZR_3470.webp',
@@ -165,7 +165,7 @@ $collections = [
                                 >
                                 <a href="<?= htmlspecialchars($col['productUrl']) ?>"
                                    class="boutique-carousel-fg-link"
-                                   aria-label="Voir le produit">
+                                   aria-label="Voir la collection">
                                     <img
                                         src="<?= htmlspecialchars($src) ?>"
                                         alt="<?= htmlspecialchars($col['label']) ?> — <?= ($i + 1) ?>"
